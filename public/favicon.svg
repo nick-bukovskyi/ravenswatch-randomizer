@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Pirata One (OFL) "R" outlines; same path as src/app/layout/StorybookCap.tsx -->
+  <defs>
+    <linearGradient id="frame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbecc0"/>
+      <stop offset="0.5" stop-color="#d6ae58"/>
+      <stop offset="1" stop-color="#8a6a2c"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fbecc0"/>
+      <stop offset="0.5" stop-color="#d6ae58"/>
+      <stop offset="1" stop-color="#8a6a2c"/>
+    </linearGradient>
+    <path id="r" d="M209 672Q191 672 170 657V332Q196 332 228 348.5Q260 365 260 383V598Q260 672 209 672ZM50 102V620Q50 681 9 689V711L110 768Q130 760 150 739Q170 718 170 701Q280 768 296 768Q312 768 346.5 727Q381 686 381 653V372Q381 364 272 321Q318 166 380 112Q408 89 437 89V59Q344 0 319 0Q286 0 235.5 124Q185 248 181 288L170 285V154Q170 117 178 101Q186 85 211 85V54L6 -32L-10 0Q12 0 32 26Q50 51 50 102Z"/>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="8" fill="url(#frame)"/>
+  <rect x="5" y="5" width="54" height="54" rx="6" fill="#120e21"/>
+  <use href="#r" transform="translate(8.52 51.136) scale(0.052 -0.052)" fill="url(#letter)"/>
+  <use href="#r" transform="translate(33.52 51.136) scale(0.052 -0.052)" fill="url(#letter)"/>
+</svg>

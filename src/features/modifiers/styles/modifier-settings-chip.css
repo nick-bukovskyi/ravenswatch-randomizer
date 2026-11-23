@@ -1,0 +1,39 @@
+@layer components {
+  .modifier-settings-chip__swatch {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    margin-top: -2px;
+    border-radius: 5px;
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.55),
+      inset 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+
+  .modifier-settings-chip__swatch[data-selector='good'] {
+    background: radial-gradient(
+      circle at 50% 25%,
+      var(--color-positive-300) -20%,
+      var(--color-positive-500) 42%,
+      var(--color-positive-700)
+    );
+  }
+
+  .modifier-settings-chip__swatch[data-selector='bad'] {
+    background: radial-gradient(
+      circle at 50% 25%,
+      var(--color-negative-300) -20%,
+      var(--color-negative-500) 42%,
+      var(--color-negative-700)
+    );
+  }
+
+  .modifier-settings-chip__swatch[data-selector='both'] {
+    background: linear-gradient(
+      115deg,
+      var(--color-positive-500) 0 47%,
+      #0b0b1e 47% 53%,
+      var(--color-negative-500) 53% 100%
+    );
+  }
+}

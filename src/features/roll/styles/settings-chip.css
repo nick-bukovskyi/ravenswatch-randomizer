@@ -1,0 +1,19 @@
+@layer components {
+  .settings-chip__popover {
+    transform-origin: var(--radix-popover-content-transform-origin);
+    animation: fade-in 220ms var(--ease-game);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .settings-chip__popover {
+      animation-name: popover-in;
+    }
+  }
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}

@@ -1,0 +1,10 @@
+@layer components {
+  .pool-group-heading__title {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-gold-300);
+  }
+}

@@ -1,0 +1,83 @@
+@layer components {
+  .modifier-row {
+    position: relative;
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+  }
+
+  .modifier-row:last-child {
+    border-bottom: 0;
+  }
+
+  .modifier-row__main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 68px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.2s;
+  }
+
+  .modifier-row__tile-wrap {
+    position: relative;
+    width: 46px;
+    flex: none;
+  }
+
+  .modifier-row__name {
+    color: var(--color-cream-bright);
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.75);
+  }
+
+  .modifier-row__actions {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    z-index: 5;
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+    border-radius: 99px;
+    background: --alpha(var(--color-night-deep) / 90%);
+    box-shadow:
+      0 8px 18px rgb(0 0 0 / 0.55),
+      0 0 0 1px --alpha(var(--color-gold-500) / 35%);
+    opacity: 0;
+    transform: translateY(-50%) scale(0.92);
+    pointer-events: none;
+    transition:
+      opacity 0.2s,
+      transform 0.2s var(--ease-game);
+  }
+
+  .modifier-row__actions .card-actions__button {
+    --card-actions-button-bg: rgb(255 255 255 / 0.07);
+    width: 34px;
+    height: 34px;
+    box-shadow: none;
+    font-size: 16px;
+  }
+
+  .modifier-row[data-selected='true'] .modifier-row__actions,
+  .modifier-row:has(:focus-visible) .modifier-row__actions {
+    opacity: 1;
+    transform: translateY(-50%);
+    pointer-events: auto;
+  }
+
+  .modifier-row[data-selected='true'] .modifier-row__main,
+  .modifier-row:has(:focus-visible) .modifier-row__main {
+    background: rgb(255 255 255 / 0.04);
+  }
+
+  @media (hover: hover) {
+    .modifier-row:hover .modifier-row__actions {
+      opacity: 1;
+      transform: translateY(-50%);
+      pointer-events: auto;
+    }
+    .modifier-row:hover .modifier-row__main {
+      background: rgb(255 255 255 / 0.04);
+    }
+  }
+}

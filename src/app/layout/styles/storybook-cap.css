@@ -1,0 +1,17 @@
+@layer components {
+  /*
+   * The R is 2.1 small-cap heights tall; 800/768 and 56 are units of its -10 -768 447 800 viewBox.
+   * As a flex item it ignores vertical-align, so translate drops its thin foot 56 units to the baseline
+   */
+  .storybook-cap {
+    --cap-scale: 2.1;
+    display: inline-block;
+    height: calc(var(--cap-scale) * 1cap * 800 / 768);
+    aspect-ratio: 447 / 800;
+    margin-right: 0.14em;
+    overflow: visible;
+    translate: 0 calc(var(--cap-scale) * 1cap * 56 / 768);
+    filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.7))
+      drop-shadow(0 0 16px --alpha(var(--color-gold-500) / 22%));
+  }
+}

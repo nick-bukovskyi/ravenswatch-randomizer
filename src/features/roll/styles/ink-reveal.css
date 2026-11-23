@@ -1,0 +1,287 @@
+/* Timings mirror inkTiming.ts (sound cues); users must set --ink-delay and --ink-leave-delay */
+@property --ink-radius {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --ink-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@layer components {
+  .hero-card__portrait-wrap::before,
+  .modifier-row__tile-wrap::before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      transparent 55%,
+      --alpha(var(--color-gold-300) / 40%) 72%,
+      transparent
+    );
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .hero-card__portrait-wrap::before {
+    inset: -14%;
+  }
+
+  .modifier-row__tile-wrap::before {
+    inset: -14px;
+  }
+
+  .hero-card__ring,
+  .modifier-row__ring {
+    position: absolute;
+    border: 2px solid var(--color-gold-300);
+    box-shadow: 0 0 18px 4px --alpha(var(--color-gold-300) / 60%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .hero-card__ring {
+    inset: -5px;
+    border-radius: 4px;
+  }
+
+  .modifier-row__ring {
+    inset: -4px;
+    border-radius: 26%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-card[data-ink='in'] .hero-card__frame::before {
+      mask: conic-gradient(#000 var(--ink-angle), transparent calc(var(--ink-angle) + 0.6deg));
+      animation: ink-frame-draw 0.8s ease-in-out var(--ink-delay) both;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__inner {
+      animation: fade-in 0.4s ease calc(var(--ink-delay) + 150ms) both;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__art > img,
+    .hero-card[data-ink='out'] .hero-card__art > img {
+      mask-image:
+        radial-gradient(
+          circle at 50% 52%,
+          #000 var(--ink-radius),
+          transparent calc(var(--ink-radius) + 28%)
+        ),
+        var(--art-edge-fade);
+    }
+
+    .hero-card[data-ink='in'] .hero-card__art > img {
+      animation: ink-bleed 1.15s var(--ease-ink) calc(var(--ink-delay) + 300ms) both;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__portrait-wrap > .portrait-frame {
+      animation: ink-stamp 0.5s var(--ease-ink-stamp) calc(var(--ink-delay) + 900ms) both;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__ring {
+      animation: ink-ring 0.65s ease-out calc(var(--ink-delay) + 1130ms) forwards;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__portrait-wrap::before {
+      animation: ink-ring 0.85s ease-out calc(var(--ink-delay) + 1130ms) forwards;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__banner-wrap {
+      animation: ink-unfurl 0.6s cubic-bezier(0.3, 0.7, 0.2, 1) calc(var(--ink-delay) + 1150ms) both;
+    }
+
+    .hero-card[data-ink='in'] .hero-card__name {
+      animation: ink-write 0.45s var(--ease-ink) calc(var(--ink-delay) + 1450ms) both;
+    }
+
+    .hero-card[data-ink='out'] .hero-card__art > img {
+      animation: ink-bleed 0.6s cubic-bezier(0.6, 0, 0.7, 0.4) var(--ink-leave-delay) reverse both;
+    }
+
+    .hero-card[data-ink='out'] .hero-card__portrait-wrap,
+    .hero-card[data-ink='out'] .hero-card__banner-wrap {
+      animation: ink-out 0.45s ease-in var(--ink-leave-delay) both;
+    }
+
+    .hero-card[data-ink='out'] .hero-card__body {
+      animation: fade-out-blur 0.45s ease-in calc(var(--ink-leave-delay) + 350ms) both;
+    }
+
+    .modifier-row[data-ink='in'] .modifier-row__main {
+      animation: fade-in 0.25s ease var(--ink-delay) both;
+    }
+
+    .modifier-row[data-ink='in'] .icon-tile {
+      animation: ink-stamp 0.5s var(--ease-ink-stamp) calc(var(--ink-delay) + 60ms) both;
+    }
+
+    .modifier-row[data-ink='in'] .modifier-row__ring {
+      animation: ink-ring 0.65s ease-out calc(var(--ink-delay) + 330ms) forwards;
+    }
+
+    .modifier-row[data-ink='in'] .modifier-row__tile-wrap::before {
+      animation: ink-ring 0.85s ease-out calc(var(--ink-delay) + 330ms) forwards;
+    }
+
+    .modifier-row[data-ink='in'] .modifier-row__name {
+      animation: ink-write 0.45s var(--ease-ink) calc(var(--ink-delay) + 430ms) both;
+    }
+
+    .modifier-row[data-ink='in'] .modifier-row__description {
+      animation: ink-write 0.65s var(--ease-ink) calc(var(--ink-delay) + 600ms) both;
+    }
+
+    .modifier-row[data-ink='in'] .modifier-row__score {
+      animation: ink-pop 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) calc(var(--ink-delay) + 950ms) both;
+    }
+
+    .modifier-row[data-ink='out'] .modifier-row__description {
+      animation: ink-write 0.4s ease-in var(--ink-leave-delay) reverse both;
+    }
+
+    .modifier-row[data-ink='out'] .modifier-row__name {
+      animation: ink-write 0.35s ease-in calc(var(--ink-leave-delay) + 80ms) reverse both;
+    }
+
+    .modifier-row[data-ink='out'] .modifier-row__score {
+      animation: fade-out-blur 0.25s ease-in var(--ink-leave-delay) both;
+    }
+
+    .modifier-row[data-ink='out'] .icon-tile {
+      animation: ink-tile-out 0.4s ease-in calc(var(--ink-leave-delay) + 140ms) both;
+    }
+
+    .modifier-row[data-ink='out'] .modifier-row__main {
+      animation: fade-out-blur 0.3s ease-in calc(var(--ink-leave-delay) + 420ms) both;
+    }
+
+    .hero-card[data-shaking='true'] .hero-card__body,
+    .modifier-row[data-shaking='true'] {
+      animation: ink-shake 0.35s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-card[data-ink='in'] .hero-card__body,
+    .modifier-row[data-ink='in'] .modifier-row__main {
+      animation: fade-in 0.3s ease var(--ink-delay) both;
+    }
+
+    .hero-card[data-ink='out'] .hero-card__body,
+    .modifier-row[data-ink='out'] .modifier-row__main {
+      animation: fade-out-blur 0.3s ease-in both;
+    }
+  }
+}
+
+@keyframes ink-frame-draw {
+  from {
+    --ink-angle: 0deg;
+  }
+  to {
+    --ink-angle: 361deg;
+  }
+}
+
+@keyframes ink-bleed {
+  0% {
+    --ink-radius: 0%;
+    filter: grayscale(1) contrast(1.5) brightness(0.75);
+  }
+  55% {
+    filter: grayscale(0.7) contrast(1.2) brightness(0.9);
+  }
+  100% {
+    --ink-radius: 105%;
+    filter: none;
+  }
+}
+
+@keyframes ink-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(1.7) rotate(-10deg);
+    filter: brightness(1.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(0.92) rotate(1.5deg);
+    filter: brightness(1.3);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes ink-ring {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes ink-unfurl {
+  from {
+    clip-path: inset(0 50% 0 50%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes ink-write {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.3;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+@keyframes ink-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ink-out {
+  to {
+    opacity: 0;
+    transform: scale(0.88);
+    filter: blur(4px);
+  }
+}
+
+@keyframes ink-tile-out {
+  to {
+    opacity: 0;
+    transform: scale(0.55) rotate(8deg);
+    filter: blur(3px);
+  }
+}
+
+@keyframes ink-shake {
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}

@@ -1,0 +1,9 @@
+@layer components {
+  .wordmark__word {
+    letter-spacing: 0.07em;
+    color: var(--color-cream-bright);
+    text-shadow:
+      0 1px 0 rgb(0 0 0 / 0.8),
+      0 0 12px rgb(0 0 0 / 0.45);
+  }
+}

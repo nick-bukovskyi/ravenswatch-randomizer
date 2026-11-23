@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+/*
+ * Import order is the cascade order within each layer
+ * Tailwind utilities in JSX; a component class only for what Tailwind cannot express cleanly
+ * BEM-lite: block = owning component in kebab-case, __element, data-* for states and variants
+ * @utility only for treatments with several consumers; src/styles/ holds only global files
+ * Component CSS sits in its owner's styles/ folder, in a file named after its block
+ */
+@import './styles/theme.css';
+@import './styles/base.css';
+@import './styles/utilities.css';
+@import './styles/keyframes.css';
+@import './app/layout/styles/backdrop.css';
+@import './app/layout/styles/wordmark.css';
+@import './app/layout/styles/storybook-cap.css';
+@import './shared/ui/styles/shape-layers.css';
+@import './shared/ui/styles/button.css';
+@import './features/roll/styles/roll-button.css';
+@import './features/roll/styles/group-panel.css';
+@import './shared/ui/styles/portrait-frame.css';
+@import './features/modifiers/styles/icon-tile.css';
+@import './features/modifiers/styles/modifier-glyph.css';
+@import './features/modifiers/styles/modifier-score.css';
+@import './features/modifiers/styles/modifier-settings-chip.css';
+@import './features/modifiers/styles/split-tile.css';
+@import './shared/ui/styles/tooltip.css';
+@import './features/roll/styles/settings-chip.css';
+@import './features/share/styles/share-button.css';
+@import './shared/ui/styles/game-dialog.css';
+@import './features/roll/styles/card-actions.css';
+@import './features/heroes/styles/hero-card.css';
+@import './features/modifiers/styles/modifier-row.css';
+@import './features/heroes/styles/hero-empty-state.css';
+@import './features/modifiers/styles/modifier-empty-state.css';
+@import './features/roll/styles/empty-state.css';
+@import './features/roll/styles/ink-reveal.css';
+@import './features/pool/styles/pool-tile.css';
+@import './features/pool/styles/ban-seal.css';
+@import './features/pool/styles/pool-group-heading.css';

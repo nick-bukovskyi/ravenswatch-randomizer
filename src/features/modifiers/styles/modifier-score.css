@@ -1,0 +1,9 @@
+@layer components {
+  .modifier-score[data-polarity='good'] {
+    color: var(--color-positive-300);
+  }
+
+  .modifier-score[data-polarity='bad'] {
+    color: var(--color-negative-300);
+  }
+}

@@ -1,0 +1,17 @@
+@layer components {
+  .ban-seal {
+    filter: drop-shadow(0 3px 2px rgb(0 0 0 / 0.65))
+      drop-shadow(0 0 6px --alpha(var(--color-crimson-900) / 60%));
+  }
+
+  /* `in srgb`: the color-mix() stops would otherwise switch the blend to Oklab */
+  .ban-seal__dust {
+    background: radial-gradient(
+      closest-side in srgb,
+      transparent 55%,
+      --alpha(var(--color-crimson-300) / 45%) 72%,
+      --alpha(var(--color-gold-300) / 25%) 85%,
+      transparent
+    );
+  }
+}

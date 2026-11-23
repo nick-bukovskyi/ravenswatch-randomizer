@@ -1,0 +1,35 @@
+@layer components {
+  .group-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 26px 26px 32px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgb(34 29 62 / 0.88), rgb(20 17 42 / 0.92));
+    backdrop-filter: blur(8px);
+    box-shadow:
+      var(--panel-highlight),
+      0 0 0 1px --alpha(var(--color-gold-300) / 8%),
+      0 34px 60px -34px #000;
+  }
+
+  .group-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 8%;
+    left: 8%;
+    height: 90px;
+    border-radius: 16px;
+    background: radial-gradient(ellipse at 50% 0, rgb(190 175 255 / 0.17), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Keep in sync with the `max-[560px]:` variant the panel's contents use */
+  @media (width < 560px) {
+    .group-panel {
+      padding: 20px 16px 24px;
+    }
+  }
+}

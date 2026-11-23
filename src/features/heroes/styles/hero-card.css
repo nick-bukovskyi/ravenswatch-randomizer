@@ -1,0 +1,163 @@
+@layer components {
+  .hero-card {
+    position: relative;
+    width: var(--hero-width);
+    container-type: inline-size;
+  }
+
+  .hero-card__body {
+    position: relative;
+  }
+
+  .hero-card__lift {
+    display: block;
+    transition: transform 0.25s var(--ease-game);
+  }
+
+  .hero-card__frame {
+    position: relative;
+    padding: 2px;
+    border-radius: 7px;
+    box-shadow: 0 16px 26px -14px rgb(0 0 0 / 0.85);
+  }
+
+  .hero-card__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 7px;
+    background: linear-gradient(160deg, var(--gold-bevel-stops));
+  }
+
+  .hero-card__inner {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: 5px;
+    background: #0c0a1a;
+  }
+
+  .hero-card__art {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: radial-gradient(
+      ellipse 80% 60% at 50% 30%,
+      #4a3f80,
+      var(--color-panel-raised) 45%,
+      var(--color-panel-deep)
+    );
+  }
+
+  /*
+   * artFocus puts --art-x at the card center and --art-y at the card top; 150% is the 8:15 art's
+   * height in the 4:5 box at zoom 1. Illustrations are cut at their left and top edges, so those fade
+   */
+  .hero-card__art > img {
+    position: absolute;
+    top: calc(var(--art-y) * var(--art-zoom) * -150%);
+    left: calc(50% - var(--art-x) * var(--art-zoom) * 100%);
+    display: block;
+    width: calc(var(--art-zoom) * 100%);
+    max-width: none;
+    height: auto;
+    aspect-ratio: 8 / 15;
+    --art-edge-fade:
+      linear-gradient(to right, transparent, #000 7%),
+      linear-gradient(to bottom, transparent, #000 3%);
+    mask-image: var(--art-edge-fade);
+    mask-composite: intersect;
+  }
+
+  .hero-card__art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to bottom, transparent 60%, --alpha(var(--color-night-deep) / 88%));
+    pointer-events: none;
+  }
+
+  .hero-card__foot {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -15cqw;
+    padding-bottom: 4cqw;
+  }
+
+  .hero-card__portrait-wrap {
+    position: relative;
+    width: 29cqw;
+  }
+
+  .hero-card__banner-wrap {
+    width: 86%;
+    margin-top: 2.6cqw;
+  }
+
+  .hero-card__banner {
+    padding: 2.2cqw 4cqw 1.6cqw;
+    border-block: 1px solid var(--color-gold-500);
+    background: linear-gradient(180deg, var(--color-crimson-700), var(--color-crimson-900));
+    clip-path: polygon(0 0, 100% 0, calc(100% - 3.5cqw) 50%, 100% 100%, 0 100%, 3.5cqw 50%);
+    text-align: center;
+  }
+
+  .hero-card__name {
+    display: block;
+    color: var(--color-cream-bright);
+    font-size: clamp(15px, 9cqw, 22px);
+    line-height: 1.12;
+    text-wrap: balance;
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.75);
+  }
+
+  .hero-card__lock {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    z-index: 6;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: --alpha(var(--color-night-deep) / 75%);
+    color: var(--color-gold-300);
+    font-size: 13px;
+  }
+
+  .hero-card__actions {
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-radius: 7px;
+    background: --alpha(var(--color-night-deep) / 50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .hero-card[data-selected='true'] .hero-card__actions,
+  .hero-card:has(:focus-visible) .hero-card__actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (hover: hover) {
+    .hero-card:hover .hero-card__actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .hero-card:hover .hero-card__lift {
+      transform: translateY(-3px);
+    }
+  }
+}

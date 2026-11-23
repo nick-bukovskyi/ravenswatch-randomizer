@@ -1,0 +1,12 @@
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out-blur {
+  to {
+    opacity: 0;
+    filter: blur(5px);
+  }
+}

@@ -1,0 +1,42 @@
+@layer components {
+  .button {
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    transition:
+      transform 160ms var(--ease-game),
+      filter 200ms ease;
+  }
+
+  .button:focus-visible {
+    outline: none;
+  }
+
+  .button:focus-visible > .shape-layers__ring {
+    opacity: 1;
+  }
+
+  @media (hover: hover) {
+    .button:hover:not(:disabled, [aria-disabled='true']) {
+      filter: brightness(1.12) drop-shadow(0 0 10px --alpha(var(--color-gold-300) / 40%));
+    }
+  }
+
+  .button:active:not(:disabled, [aria-disabled='true']) {
+    transform: translateY(1px) scale(0.97);
+    filter: brightness(0.9);
+  }
+
+  .button:disabled,
+  .button[aria-disabled='true'] {
+    cursor: not-allowed;
+    filter: grayscale(0.85) brightness(0.6);
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
+    .button:hover:not(:disabled, [aria-disabled='true']) > .shape-layers__fill::after {
+      transform: translateX(130%);
+      transition: transform 750ms var(--ease-game);
+    }
+  }
+}

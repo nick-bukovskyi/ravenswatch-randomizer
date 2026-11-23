@@ -1,0 +1,40 @@
+@layer components {
+  .share-button__toast[data-state='open'] {
+    animation: toast-in 280ms var(--ease-game);
+  }
+
+  .share-button__toast[data-state='closed'] {
+    animation: toast-out 180ms ease-in forwards;
+  }
+
+  .share-button__toast[data-swipe='move'] {
+    transform: translateY(var(--radix-toast-swipe-move-y));
+  }
+
+  .share-button__toast[data-swipe='end'] {
+    animation: toast-out 180ms ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .share-button__toast[data-state='open'] {
+      animation-name: fade-in;
+    }
+    .share-button__toast[data-state='closed'] {
+      animation: none;
+    }
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

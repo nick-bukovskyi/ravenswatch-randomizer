@@ -1,0 +1,49 @@
+@layer components {
+  .tooltip {
+    max-width: 250px;
+    padding: 6px 11px 5px;
+    border: 1px solid var(--color-gold-700);
+    border-radius: 6px;
+    background: var(--color-panel-deep);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.25;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 0.7);
+    transform-origin: var(
+      --radix-tooltip-content-transform-origin,
+      var(--radix-popover-content-transform-origin)
+    );
+    animation: fade-in 120ms ease-out;
+  }
+
+  /* Overlaps the border so the arrow reads as a notch in it */
+  .tooltip__arrow {
+    margin-top: -1px;
+    fill: var(--color-panel-deep);
+    stroke: var(--color-gold-700);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tooltip[data-side='top'] {
+      animation-name: tooltip-from-below;
+    }
+    .tooltip[data-side='bottom'] {
+      animation-name: tooltip-from-above;
+    }
+  }
+}
+
+@keyframes tooltip-from-below {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.94);
+  }
+}
+
+@keyframes tooltip-from-above {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.94);
+  }
+}

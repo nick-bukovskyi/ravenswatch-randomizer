@@ -1,0 +1,17 @@
+@layer components {
+  .portrait-frame {
+    display: block;
+    aspect-ratio: 1;
+    padding: 2px;
+    background: linear-gradient(145deg, var(--gold-bevel-stops));
+    box-shadow: 0 8px 16px -6px #000;
+  }
+
+  .portrait-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px #000;
+  }
+}
