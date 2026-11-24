@@ -7,7 +7,7 @@ const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
  * in `PoolHeroTile` do not, so they read this hook.
  */
 export function usePrefersReducedMotion(): boolean {
-  return useSyncExternalStore(subscribe, getSnapshot);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 function subscribe(onChange: () => void): () => void {
@@ -19,4 +19,8 @@ function subscribe(onChange: () => void): () => void {
 
 function getSnapshot(): boolean {
   return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+function getServerSnapshot(): boolean {
+  return false;
 }

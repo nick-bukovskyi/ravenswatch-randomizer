@@ -9,6 +9,7 @@ import epilogue from '../../assets/backgrounds/epilogue.webp';
 import keyArt from '../../assets/backgrounds/key-art.webp';
 import stormIslandSmall from '../../assets/backgrounds/storm-island-1920.webp';
 import stormIsland from '../../assets/backgrounds/storm-island.webp';
+import { useIsClient } from '../../shared/hooks/useIsClient.ts';
 
 interface Painting {
   readonly src: string;
@@ -27,20 +28,25 @@ const PAINTINGS: readonly [Painting, ...Painting[]] = [
 const painting = PAINTINGS[Math.floor(Math.random() * PAINTINGS.length)] ?? PAINTINGS[0];
 
 export function Backdrop() {
+  const isClient = useIsClient();
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <div aria-hidden="true" className="backdrop">
-      <img
-        src={painting.src}
-        srcSet={painting.srcSet}
-        sizes="100vw"
-        alt=""
-        decoding="async"
-        data-loaded={isLoaded}
-        className="backdrop__art"
-        onLoad={() => setIsLoaded(true)}
-      />
+      {/* Client-only: the painting is random, and onLoad could miss a prerendered image */}
+      {isClient && (
+        <img
+          src={painting.src}
+          srcSet={painting.srcSet}
+          sizes="100vw"
+          alt=""
+          decoding="async"
+          data-loaded={isLoaded}
+          className="backdrop__art"
+          onLoad={() => setIsLoaded(true)}
+        />
+      )}
       <div className="backdrop__overlay" />
       <div className="backdrop__vignette" />
     </div>

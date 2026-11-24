@@ -11,6 +11,23 @@
     <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Ravenswatch Randomizer</title>
+
+    <!-- Hides the prerendered default screen when there is state to restore -->
+    <script>
+      {
+        let hasSavedState = false;
+
+        try {
+          hasSavedState = localStorage.length > 0;
+        } catch {
+          // Storage is blocked
+        }
+
+        if (location.search !== '' || hasSavedState) {
+          document.documentElement.setAttribute('data-restoring', '');
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

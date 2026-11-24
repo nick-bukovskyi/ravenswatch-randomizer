@@ -10,3 +10,9 @@
     filter: blur(5px);
   }
 }
+
+@keyframes restore-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

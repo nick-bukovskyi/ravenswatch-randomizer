@@ -5,7 +5,8 @@ import '@fontsource/alegreya-sans/700.css';
 import './index.css';
 
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 
 import { App } from './app/App.tsx';
 import { startSoundEffects } from './features/sound/lib/soundEffects.ts';
@@ -21,8 +22,20 @@ if (!rootElement) {
 startUrlSync();
 startSoundEffects();
 
-createRoot(rootElement).render(
+const app = (
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 );
+
+// The prerender shows only the default state, so restored state renders fresh
+const isRestoring = document.documentElement.hasAttribute('data-restoring');
+
+if (isRestoring || rootElement.firstElementChild === null) {
+  const root = createRoot(rootElement);
+
+  flushSync(() => root.render(app));
+  document.documentElement.removeAttribute('data-restoring');
+} else {
+  hydrateRoot(rootElement, app);
+}
