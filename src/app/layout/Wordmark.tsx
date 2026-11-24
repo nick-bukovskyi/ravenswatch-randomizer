@@ -6,11 +6,11 @@ export function Wordmark() {
       <span className="sr-only">Ravenswatch Randomizer</span>
       <span aria-hidden="true" className="inline-flex items-baseline">
         <StorybookCap />
-        <span className="wordmark__word">avenswatch</span>
+        <span data-word="avenswatch" className="wordmark__word" />
       </span>
       <span aria-hidden="true" className="inline-flex items-baseline">
         <StorybookCap />
-        <span className="wordmark__word">andomizer</span>
+        <span data-word="andomizer" className="wordmark__word" />
       </span>
     </h1>
   );
