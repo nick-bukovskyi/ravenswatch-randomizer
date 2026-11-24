@@ -41,8 +41,11 @@ export function HeroCard({
           <div className="hero-card__frame">
             <div className="hero-card__inner">
               <div className="hero-card__art">
+                {/* The art is about 370px wide at most, so 1x screens get the small file */}
                 <img
                   src={hero.illustration}
+                  srcSet={`${hero.illustrationSmall} 480w, ${hero.illustration} 800w`}
+                  sizes="(max-width: 560px) 85vw, 370px"
                   alt=""
                   decoding="async"
                   style={{

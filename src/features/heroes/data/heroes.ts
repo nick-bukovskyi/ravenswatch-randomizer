@@ -1,46 +1,58 @@
-// Snapshot of the build maker API (https://buildmaker.ravenswatch.com/api/game-heroes?lang=en)
 // Images came through its HTTPS image proxy, converted to WebP at native size
 // IDs are part of the share URL contract: never change or reuse them
 
 import scarletPortrait from '../../../assets/heroes/scarlet-portrait.webp';
 import scarletPortraitBw from '../../../assets/heroes/scarlet-portrait-bw.webp';
 import scarletIllustration from '../../../assets/heroes/scarlet-illustration.webp';
+import scarletIllustrationSmall from '../../../assets/heroes/scarlet-illustration-480.webp';
 import thePiedPiperPortrait from '../../../assets/heroes/the-pied-piper-portrait.webp';
 import thePiedPiperPortraitBw from '../../../assets/heroes/the-pied-piper-portrait-bw.webp';
 import thePiedPiperIllustration from '../../../assets/heroes/the-pied-piper-illustration.webp';
+import thePiedPiperIllustrationSmall from '../../../assets/heroes/the-pied-piper-illustration-480.webp';
 import beowulfPortrait from '../../../assets/heroes/beowulf-portrait.webp';
 import beowulfPortraitBw from '../../../assets/heroes/beowulf-portrait-bw.webp';
 import beowulfIllustration from '../../../assets/heroes/beowulf-illustration.webp';
+import beowulfIllustrationSmall from '../../../assets/heroes/beowulf-illustration-480.webp';
 import theSnowQueenPortrait from '../../../assets/heroes/the-snow-queen-portrait.webp';
 import theSnowQueenPortraitBw from '../../../assets/heroes/the-snow-queen-portrait-bw.webp';
 import theSnowQueenIllustration from '../../../assets/heroes/the-snow-queen-illustration.webp';
+import theSnowQueenIllustrationSmall from '../../../assets/heroes/the-snow-queen-illustration-480.webp';
 import aladdinPortrait from '../../../assets/heroes/aladdin-portrait.webp';
 import aladdinPortraitBw from '../../../assets/heroes/aladdin-portrait-bw.webp';
 import aladdinIllustration from '../../../assets/heroes/aladdin-illustration.webp';
+import aladdinIllustrationSmall from '../../../assets/heroes/aladdin-illustration-480.webp';
 import melusinePortrait from '../../../assets/heroes/melusine-portrait.webp';
 import melusinePortraitBw from '../../../assets/heroes/melusine-portrait-bw.webp';
 import melusineIllustration from '../../../assets/heroes/melusine-illustration.webp';
+import melusineIllustrationSmall from '../../../assets/heroes/melusine-illustration-480.webp';
 import geppettoPortrait from '../../../assets/heroes/geppetto-portrait.webp';
 import geppettoPortraitBw from '../../../assets/heroes/geppetto-portrait-bw.webp';
 import geppettoIllustration from '../../../assets/heroes/geppetto-illustration.webp';
+import geppettoIllustrationSmall from '../../../assets/heroes/geppetto-illustration-480.webp';
 import sunWukongPortrait from '../../../assets/heroes/sun-wukong-portrait.webp';
 import sunWukongPortraitBw from '../../../assets/heroes/sun-wukong-portrait-bw.webp';
 import sunWukongIllustration from '../../../assets/heroes/sun-wukong-illustration.webp';
+import sunWukongIllustrationSmall from '../../../assets/heroes/sun-wukong-illustration-480.webp';
 import carmillaPortrait from '../../../assets/heroes/carmilla-portrait.webp';
 import carmillaPortraitBw from '../../../assets/heroes/carmilla-portrait-bw.webp';
 import carmillaIllustration from '../../../assets/heroes/carmilla-illustration.webp';
+import carmillaIllustrationSmall from '../../../assets/heroes/carmilla-illustration-480.webp';
 import romeoPortrait from '../../../assets/heroes/romeo-portrait.webp';
 import romeoPortraitBw from '../../../assets/heroes/romeo-portrait-bw.webp';
 import romeoIllustration from '../../../assets/heroes/romeo-illustration.webp';
+import romeoIllustrationSmall from '../../../assets/heroes/romeo-illustration-480.webp';
 import julietPortrait from '../../../assets/heroes/juliet-portrait.webp';
 import julietPortraitBw from '../../../assets/heroes/juliet-portrait-bw.webp';
 import julietIllustration from '../../../assets/heroes/juliet-illustration.webp';
+import julietIllustrationSmall from '../../../assets/heroes/juliet-illustration-480.webp';
 import merlinPortrait from '../../../assets/heroes/merlin-portrait.webp';
 import merlinPortraitBw from '../../../assets/heroes/merlin-portrait-bw.webp';
 import merlinIllustration from '../../../assets/heroes/merlin-illustration.webp';
+import merlinIllustrationSmall from '../../../assets/heroes/merlin-illustration-480.webp';
 import kintaroPortrait from '../../../assets/heroes/kintaro-portrait.webp';
 import kintaroPortraitBw from '../../../assets/heroes/kintaro-portrait-bw.webp';
 import kintaroIllustration from '../../../assets/heroes/kintaro-illustration.webp';
+import kintaroIllustrationSmall from '../../../assets/heroes/kintaro-illustration-480.webp';
 
 /** Tuned per hero by eye: the art sits left of center and is cut at its left edge */
 interface ArtFocus {
@@ -58,7 +70,10 @@ interface HeroData {
   readonly description: string;
   readonly portrait: string;
   readonly portraitBw: string;
+  /** 800px wide */
   readonly illustration: string;
+  /** 480px wide, for screens that do not need the full size */
+  readonly illustrationSmall: string;
   readonly artFocus: ArtFocus;
 }
 
@@ -71,6 +86,7 @@ const heroData = [
     portrait: scarletPortrait,
     portraitBw: scarletPortraitBw,
     illustration: scarletIllustration,
+    illustrationSmall: scarletIllustrationSmall,
     artFocus: { x: 0.5, y: 0, zoom: 1 },
   },
   {
@@ -81,6 +97,7 @@ const heroData = [
     portrait: thePiedPiperPortrait,
     portraitBw: thePiedPiperPortraitBw,
     illustration: thePiedPiperIllustration,
+    illustrationSmall: thePiedPiperIllustrationSmall,
     artFocus: { x: 0.38, y: 0, zoom: 1.15 },
   },
   {
@@ -91,6 +108,7 @@ const heroData = [
     portrait: beowulfPortrait,
     portraitBw: beowulfPortraitBw,
     illustration: beowulfIllustration,
+    illustrationSmall: beowulfIllustrationSmall,
     artFocus: { x: 0.45, y: 0, zoom: 1.15 },
   },
   {
@@ -101,6 +119,7 @@ const heroData = [
     portrait: theSnowQueenPortrait,
     portraitBw: theSnowQueenPortraitBw,
     illustration: theSnowQueenIllustration,
+    illustrationSmall: theSnowQueenIllustrationSmall,
     artFocus: { x: 0.4, y: 0, zoom: 1.15 },
   },
   {
@@ -111,6 +130,7 @@ const heroData = [
     portrait: aladdinPortrait,
     portraitBw: aladdinPortraitBw,
     illustration: aladdinIllustration,
+    illustrationSmall: aladdinIllustrationSmall,
     artFocus: { x: 0.4, y: 0, zoom: 1.15 },
   },
   {
@@ -121,6 +141,7 @@ const heroData = [
     portrait: melusinePortrait,
     portraitBw: melusinePortraitBw,
     illustration: melusineIllustration,
+    illustrationSmall: melusineIllustrationSmall,
     artFocus: { x: 0.48, y: 0, zoom: 1.15 },
   },
   {
@@ -131,6 +152,7 @@ const heroData = [
     portrait: geppettoPortrait,
     portraitBw: geppettoPortraitBw,
     illustration: geppettoIllustration,
+    illustrationSmall: geppettoIllustrationSmall,
     artFocus: { x: 0.42, y: 0, zoom: 1.15 },
   },
   {
@@ -141,6 +163,7 @@ const heroData = [
     portrait: sunWukongPortrait,
     portraitBw: sunWukongPortraitBw,
     illustration: sunWukongIllustration,
+    illustrationSmall: sunWukongIllustrationSmall,
     artFocus: { x: 0.54, y: 0, zoom: 1.15 },
   },
   {
@@ -151,6 +174,7 @@ const heroData = [
     portrait: carmillaPortrait,
     portraitBw: carmillaPortraitBw,
     illustration: carmillaIllustration,
+    illustrationSmall: carmillaIllustrationSmall,
     artFocus: { x: 0.41, y: 0, zoom: 1.15 },
   },
   {
@@ -161,6 +185,7 @@ const heroData = [
     portrait: romeoPortrait,
     portraitBw: romeoPortraitBw,
     illustration: romeoIllustration,
+    illustrationSmall: romeoIllustrationSmall,
     artFocus: { x: 0.5, y: 0, zoom: 1.15 },
   },
   {
@@ -171,6 +196,7 @@ const heroData = [
     portrait: julietPortrait,
     portraitBw: julietPortraitBw,
     illustration: julietIllustration,
+    illustrationSmall: julietIllustrationSmall,
     artFocus: { x: 0.42, y: 0, zoom: 1.15 },
   },
   {
@@ -181,6 +207,7 @@ const heroData = [
     portrait: merlinPortrait,
     portraitBw: merlinPortraitBw,
     illustration: merlinIllustration,
+    illustrationSmall: merlinIllustrationSmall,
     artFocus: { x: 0.37, y: 0, zoom: 1.15 },
   },
   {
@@ -191,6 +218,7 @@ const heroData = [
     portrait: kintaroPortrait,
     portraitBw: kintaroPortraitBw,
     illustration: kintaroIllustration,
+    illustrationSmall: kintaroIllustrationSmall,
     artFocus: { x: 0.42, y: -0.02, zoom: 1.3 },
   },
 ] as const satisfies readonly HeroData[];
