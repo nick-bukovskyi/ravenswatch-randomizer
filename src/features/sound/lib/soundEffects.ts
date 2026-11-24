@@ -1,37 +1,7 @@
-import { Howl, Howler } from 'howler';
-
-import bongMp3 from '../../../assets/sounds/bong_001.mp3';
-import bongOgg from '../../../assets/sounds/bong_001.ogg';
-import cardPlaceMp3 from '../../../assets/sounds/card-place-1.mp3';
-import cardPlaceOgg from '../../../assets/sounds/card-place-1.ogg';
-import cardSlideAMp3 from '../../../assets/sounds/card-slide-2.mp3';
-import cardSlideAOgg from '../../../assets/sounds/card-slide-2.ogg';
-import cardSlideBMp3 from '../../../assets/sounds/card-slide-3.mp3';
-import cardSlideBOgg from '../../../assets/sounds/card-slide-3.ogg';
-import clickMp3 from '../../../assets/sounds/click_001.mp3';
-import clickOgg from '../../../assets/sounds/click_001.ogg';
-import glassMp3 from '../../../assets/sounds/glass_001.mp3';
-import glassOgg from '../../../assets/sounds/glass_001.ogg';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
 import type { CardKind } from '../../roll/lib/roll.ts';
 import { onRollEvent } from '../../roll/lib/rollEvents.ts';
-
-// Kenney CC0 sounds (see CREDITS.md); MP3 is the fallback for browsers without Ogg (older Safari)
-const SOURCES = {
-  cardSlideA: [cardSlideAOgg, cardSlideAMp3],
-  cardSlideB: [cardSlideBOgg, cardSlideBMp3],
-  cardPlace: [cardPlaceOgg, cardPlaceMp3],
-  glass: [glassOgg, glassMp3],
-  bong: [bongOgg, bongMp3],
-  click: [clickOgg, clickMp3],
-} satisfies Record<string, readonly [ogg: string, mp3: string]>;
-
-type SoundName = keyof typeof SOURCES;
-
-interface Voice {
-  readonly volume: number;
-  readonly rate: number;
-}
+import type { SoundName, SoundPlayer, Voice } from './soundPlayer.ts';
 
 const LAND_MIN_INTERVAL_MS = 40;
 /** A restore reveals both groups at once and each reports its own end; they share one flourish */
@@ -40,7 +10,7 @@ const FLOURISH_MIN_INTERVAL_MS = 1500;
 const HERO_CHIME_STEPS = [0, 3, 7, 10, 12] as const;
 const HERO_CHIME_BASE_RATE = 0.75;
 
-let sounds: Record<SoundName, Howl> | null = null;
+let player: SoundPlayer | null = null;
 let lastLandAt = Number.NEGATIVE_INFINITY;
 let lastFlourishAt = Number.NEGATIVE_INFINITY;
 let heroLandings = 0;
@@ -124,18 +94,8 @@ function playFlourish(): void {
   play('glass', { volume: 0.09, rate: 0.5 });
 }
 
-function play(name: SoundName, { volume, rate }: Voice): void {
-  const sound = sounds?.[name];
-
-  // Not loaded or failed: skip rather than queue, so a late sound never plays off the beat
-  if (!sound || sound.state() !== 'loaded') {
-    return;
-  }
-
-  const id = sound.play();
-
-  sound.volume(volume, id);
-  sound.rate(rate, id);
+function play(name: SoundName, voice: Voice): void {
+  player?.play(name, voice);
 }
 
 function vary(center: number, spread: number): number {
@@ -144,9 +104,7 @@ function vary(center: number, spread: number): number {
 
 function applyMuted(muted: boolean): void {
   // No audio context before loading; loadSounds applies the setting
-  if (sounds) {
-    Howler.mute(muted);
-  }
+  player?.setMuted(muted);
 }
 
 /** Browsers block creating the audio context before a user gesture */
@@ -177,18 +135,11 @@ function loadOnFirstGesture(): () => void {
 }
 
 function loadSounds(): void {
-  sounds = {
-    cardSlideA: createSound('cardSlideA'),
-    cardSlideB: createSound('cardSlideB'),
-    cardPlace: createSound('cardPlace'),
-    glass: createSound('glass'),
-    bong: createSound('bong'),
-    click: createSound('click'),
-  };
-
-  Howler.mute(useRandomizerStore.getState().muted);
-}
-
-function createSound(name: SoundName): Howl {
-  return new Howl({ src: [...SOURCES[name]], format: ['ogg', 'mp3'] });
+  import('./soundPlayer.ts')
+    .then(({ createSoundPlayer }) => {
+      player = createSoundPlayer(useRandomizerStore.getState().muted);
+    })
+    .catch(() => {
+      // Sounds are optional, so a failed download leaves the app silent
+    });
 }
