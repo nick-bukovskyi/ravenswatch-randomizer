@@ -2,6 +2,7 @@ import * as Toast from '@radix-ui/react-toast';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { MotionConfig } from 'motion/react';
 
+import { GuideSection } from '../features/guide/components/GuideSection.tsx';
 import { Backdrop } from './layout/Backdrop.tsx';
 import { Footer } from './layout/Footer.tsx';
 import { Header } from './layout/Header.tsx';
@@ -18,6 +19,7 @@ export function App() {
             <Header />
             <main className="flex-1">
               <MainScreen />
+              <GuideSection />
             </main>
             <Footer />
           </div>
