@@ -9,6 +9,13 @@
     { "pattern": "ravenswatch-randomizer.com", "custom_domain": true },
     { "pattern": "www.ravenswatch-randomizer.com", "custom_domain": true },
   ],
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true,
+    },
+  },
   // Served only on the custom domains, so search engines see one copy of the site
   "workers_dev": false,
   "preview_urls": true,
