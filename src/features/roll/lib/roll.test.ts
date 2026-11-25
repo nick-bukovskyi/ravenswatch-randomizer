@@ -177,6 +177,25 @@ describe('rollModifierIds', () => {
     }
   });
 
+  it('never rolls Explorer together with Oppressive Nightmare', () => {
+    const kept: readonly ModifierId[] = ['ex', 'lf', 'on', 'co'];
+    const bans = {
+      heroIds: [],
+      modifierIds: [...goodIds, ...badIds].filter((id) => !kept.includes(id)),
+    };
+
+    for (const seed of SEEDS) {
+      const { ids, shortfall } = rollModifierIds(
+        contextWith({ bans, settings: { selector: 'both', modifierCount: 4, partySize: 1 } }),
+        seededRandom(seed),
+      );
+
+      expect(ids).toHaveLength(3);
+      expect(shortfall).toBe(1);
+      expect(ids.includes('ex') && ids.includes('on')).toBe(false);
+    }
+  });
+
   it('never rolls banned modifiers', () => {
     const bannedIds: readonly ModifierId[] = ['lf', 'id', 'co'];
 

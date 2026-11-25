@@ -37,6 +37,10 @@ interface ModifierData {
   readonly description: string;
   /** End-of-run score change in percent, from the game files */
   readonly scorePercent: number;
+  /**
+   * Never rolled together: from the game files, except Explorer and Oppressive Nightmare (Explorer
+   * removes the boss timer that Oppressive Nightmare shortens)
+   */
   readonly excludes: readonly string[];
   readonly icon: string;
 }
@@ -84,7 +88,7 @@ const modifierData = [
     name: 'Explorer',
     description: 'No countdown before the Master Nightmare awakens',
     scorePercent: -15,
-    excludes: [],
+    excludes: ['on'],
     icon: explorerIcon,
   },
   {
@@ -228,7 +232,7 @@ const modifierData = [
     name: 'Oppressive Nightmare',
     description: '1 fewer cycle before the Master Nightmare awakens',
     scorePercent: 15,
-    excludes: [],
+    excludes: ['ex'],
     icon: oppressiveNightmareIcon,
   },
   {
