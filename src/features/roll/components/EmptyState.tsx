@@ -23,7 +23,7 @@ export function EmptyState({
     <div
       data-animate-in={shouldAnimateIn}
       className={cn(
-        'empty-state flex flex-1 flex-col items-center justify-center gap-3.5 px-4 py-3 text-center',
+        'empty-state flex flex-col items-center gap-3.5 px-4 py-3 text-center',
         className,
       )}
     >

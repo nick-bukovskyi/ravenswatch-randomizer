@@ -2,6 +2,7 @@ import { useId, useRef, type MouseEvent, type ReactNode } from 'react';
 
 import { Icon } from '../../../shared/ui/Icon.tsx';
 import { Tooltip } from '../../../shared/ui/Tooltip.tsx';
+import { useHeightTransition } from '../hooks/useHeightTransition.ts';
 import { RerollFocusContext } from '../lib/rerollFocusContext.ts';
 import type { CardKind } from '../lib/roll.ts';
 import { RollButton } from './RollButton.tsx';
@@ -20,6 +21,8 @@ export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelP
   const rollButtonRef = useRef<HTMLButtonElement>(null);
   const rerollFocusRef = useRef<number | null>(null);
 
+  const { bodyRef, contentRef } = useHeightTransition();
+
   function handleReset(event: MouseEvent<HTMLButtonElement>) {
     // The reset button unmounts with the cards, so the focus moves to Roll
     if (event.currentTarget === document.activeElement) {
@@ -30,8 +33,9 @@ export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelP
   }
 
   return (
-    <section aria-labelledby={headingId} className="group-panel">
-      <div className="relative mb-[26px] flex items-center gap-3 max-[560px]:flex-wrap">
+    <section aria-labelledby={headingId} className="group-panel @container">
+      {/* The header wraps by its own width, so the Roll button gets its own line before anything overlaps */}
+      <div className="relative mb-[26px] flex items-center gap-x-2 gap-y-3 @max-[432px]:flex-wrap">
         <div className="flex min-w-0 flex-1 items-center gap-1.5">
           <h2
             id={headingId}
@@ -55,7 +59,11 @@ export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelP
         {chip}
         <RollButton ref={rollButtonRef} kind={kind} />
       </div>
-      <RerollFocusContext value={rerollFocusRef}>{children}</RerollFocusContext>
+      <div ref={bodyRef} className="group-panel__body">
+        <div ref={contentRef} className="group-panel__content">
+          <RerollFocusContext value={rerollFocusRef}>{children}</RerollFocusContext>
+        </div>
+      </div>
     </section>
   );
 }

@@ -23,7 +23,7 @@ export function RollButton({ kind, ref }: RollButtonProps) {
     <Button
       ref={ref}
       data-waiting={isEmpty}
-      className="roll-button w-44 px-[22px] max-[560px]:order-3 max-[560px]:w-full"
+      className="roll-button w-44 px-[22px] @max-[432px]:order-3 @max-[432px]:w-full"
       onClick={roll}
     >
       {LABELS[kind]}

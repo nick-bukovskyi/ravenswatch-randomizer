@@ -26,7 +26,32 @@
     pointer-events: none;
   }
 
-  /* Keep in sync with the `max-[560px]:` variant the panel's contents use */
+  /*
+   * useHeightTransition sets the height; the body still grows to the row height, so the shorter
+   * panel of the pair keeps its empty state centered. Content overflows while the body grows
+   */
+  .group-panel__body {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    min-height: 0;
+    transition: height 0.45s var(--ease-game);
+  }
+
+  .group-panel__content {
+    flex: none;
+  }
+
+  .group-panel__content:has(.empty-state) {
+    margin-block: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .group-panel__body {
+      transition: none;
+    }
+  }
+
   @media (width < 560px) {
     .group-panel {
       padding: 20px 16px 24px;
