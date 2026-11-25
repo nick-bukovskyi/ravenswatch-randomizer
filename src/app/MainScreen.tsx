@@ -4,7 +4,7 @@ import { HeroPanel } from '../features/heroes/components/HeroPanel.tsx';
 import { ModifierPanel } from '../features/modifiers/components/ModifierPanel.tsx';
 import { useRandomizerStore } from '../store/useRandomizerStore.ts';
 
-// Targets that use letter keys themselves; H and M still roll from buttons and links
+/** Targets that use letter keys themselves; H and M still roll from buttons and links */
 const LETTER_OWNING_TARGETS =
   'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="radiogroup"], [role="radio"], [role="dialog"]';
 

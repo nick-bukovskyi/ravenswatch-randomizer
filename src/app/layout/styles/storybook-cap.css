@@ -1,6 +1,6 @@
 @layer components {
   /*
-   * The R is 2.1 small-cap heights tall; 800/768 and 56 are units of its -10 -768 447 800 viewBox.
+   * The R is 2.1 small-cap heights tall; 800/768 and 56 are units of its -10 -768 447 800 viewBox
    * As a flex item it ignores vertical-align, so translate drops its thin foot 56 units to the baseline
    */
   .storybook-cap {

@@ -68,7 +68,7 @@ export const MAX_MODIFIER_COUNT = 5;
 const cryptoRandom: Random = () =>
   new DataView(crypto.getRandomValues(new Uint8Array(4)).buffer).getUint32(0) / 2 ** 32;
 
-// Locked cards stay even when banned or off-selector: bans only affect future picks
+/** Locked cards stay even when banned or off-selector: bans only affect future picks */
 export function rollHeroIds(
   { settings, bans, result, locks }: RollContext,
   random: Random = cryptoRandom,

@@ -7,7 +7,6 @@ interface SplitTileProps {
   className?: string;
 }
 
-/** A tile cut diagonally into a good and a bad half, each with its own glyph */
 export function SplitTile({ goodIcon, badIcon, className }: SplitTileProps) {
   return (
     <span aria-hidden="true" className={cn('split-tile', className)}>

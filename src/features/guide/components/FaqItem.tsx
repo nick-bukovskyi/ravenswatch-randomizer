@@ -9,7 +9,7 @@ interface FaqItemProps {
   entry: FaqEntry;
 }
 
-// The answer stays in the HTML while closed, so search engines index it
+/** The answer stays in the HTML while closed, so search engines index it */
 export function FaqItem({ entry }: FaqItemProps) {
   const panelId = useId();
   const prefersReducedMotion = usePrefersReducedMotion();

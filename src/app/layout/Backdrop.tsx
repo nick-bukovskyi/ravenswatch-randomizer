@@ -21,7 +21,7 @@ interface Painting {
   readonly srcSet: string;
 }
 
-// Paintings decoded from the game files, resized from their 3840px originals
+/** Paintings decoded from the game files, resized from their 3840px originals */
 const PAINTINGS: readonly [Painting, ...Painting[]] = [
   {
     src: stormIsland1920,

@@ -28,7 +28,7 @@ export interface SavedState {
 export const STORAGE_KEY = 'ravenswatch-randomizer';
 export const HISTORY_LIMIT = 10;
 
-// Storage can be missing or throw (private mode, blocked site data, full quota)
+/** Storage can be missing or throw (private mode, blocked site data, full quota) */
 export const safeLocalStorage: StateStorage = {
   getItem: (name) => {
     try {

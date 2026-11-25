@@ -20,7 +20,7 @@ interface BanGestureHandlers {
 
 /**
  * Android reports a long-press as both a timer hit and a context menu, and some browsers click
- * on release, so a press toggles at most once.
+ * on release, so a press toggles at most once
  */
 export function useBanGesture(onToggle: () => void): BanGestureHandlers {
   const timerRef = useRef<number | undefined>(undefined);

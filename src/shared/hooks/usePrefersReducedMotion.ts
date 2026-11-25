@@ -4,7 +4,7 @@ const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 /**
  * Motion follows `MotionConfig` in `App`. GSAP, the CSS-timed timers and the imperative shake
- * in `PoolHeroTile` do not, so they read this hook.
+ * in `PoolHeroTile` do not, so they read this hook
  */
 export function usePrefersReducedMotion(): boolean {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

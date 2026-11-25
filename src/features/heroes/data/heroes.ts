@@ -1,3 +1,4 @@
+// Snapshot of the build maker API (https://buildmaker.ravenswatch.com/api/game-heroes?lang=en)
 // Images came through its HTTPS image proxy, converted to WebP at native size
 // IDs are part of the share URL contract: never change or reuse them
 
