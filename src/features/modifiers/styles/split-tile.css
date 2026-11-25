@@ -30,8 +30,8 @@
   .split-tile__glyph {
     position: absolute;
     top: 50%;
-    width: 34%;
-    height: 34%;
+    width: 40%;
+    height: 40%;
     translate: -50% -50%;
   }
 
