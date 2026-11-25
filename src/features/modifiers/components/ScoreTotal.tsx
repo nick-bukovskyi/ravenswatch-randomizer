@@ -4,8 +4,8 @@ import { useRef } from 'react';
 
 import { usePrefersReducedMotion } from '../../../shared/hooks/usePrefersReducedMotion.ts';
 import { formatScorePercent } from '../../../shared/lib/displayText.ts';
+import { InfoPopover } from '../../../shared/ui/InfoPopover.tsx';
 import { emitRollEvent } from '../../roll/lib/rollEvents.ts';
-import { ScoreInfo } from './ScoreInfo.tsx';
 
 const COUNT_SECONDS = 0.6;
 /** Count progress at each tick; the last one lands with the number */
@@ -74,7 +74,10 @@ export function ScoreTotal({ percent, countAtMs }: ScoreTotalProps) {
         ref={valueRef}
         className="min-w-[3.4ch] text-[22px] font-normal text-cream-bright tabular-nums"
       />
-      <ScoreInfo />
+      <InfoPopover label="About the score" side="top">
+        Good modifiers lower your end-of-run score, bad ones raise it. Playing with Modifiers will
+        not unlock Difficulties, Achievements or Outfits.
+      </InfoPopover>
     </div>
   );
 }
