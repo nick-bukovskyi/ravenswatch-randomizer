@@ -260,6 +260,17 @@ export const modifiers: readonly Modifier[] = modifierData.map((modifier) => ({
   polarity: modifier.scorePercent < 0 ? 'good' : 'bad',
 }));
 
+/** Balanced mode only: at most `max` of these modifiers in one roll */
+export const BALANCED_LIMITS: readonly {
+  readonly ids: readonly ModifierId[];
+  readonly max: number;
+}[] = [
+  // Living the Dream's free Dream Shards and Inflation's doubled costs cancel out
+  { ids: ['ld', 'in'], max: 1 },
+  // All three healing penalties together leave almost no healing; two still make a challenge
+  { ids: ['di', 'df', 'bl'], max: 2 },
+];
+
 /** Keyed by string so untrusted share link codes can be looked up */
 export const modifierById: ReadonlyMap<string, Modifier> = new Map(
   modifiers.map((modifier) => [modifier.id, modifier]),

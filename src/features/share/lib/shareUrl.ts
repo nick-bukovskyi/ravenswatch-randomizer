@@ -1,5 +1,5 @@
 // Share URL contract: `?h=scju&m=qlcoin&t=a&n=3&p=2` (h, m: 2-character IDs joined without a
-// separator; t: selector; n: modifier count; p: party size). Bans and locks stay out of it
+// separator; t: selector (g good, b bad, a both, e balanced); n: modifier count; p: party size). Bans and locks stay out of it
 
 import { heroById, type HeroId } from '../../heroes/data/heroes.ts';
 import { modifierById, type ModifierId } from '../../modifiers/data/modifiers.ts';
@@ -17,7 +17,12 @@ import {
 
 export type SharedRoll = Pick<RollContext, 'result' | 'settings'>;
 
-const SELECTOR_CODES: Record<ModifierSelector, string> = { good: 'g', bad: 'b', both: 'a' };
+const SELECTOR_CODES: Record<ModifierSelector, string> = {
+  good: 'g',
+  bad: 'b',
+  both: 'a',
+  balanced: 'e',
+};
 
 export function encodeShareQuery({ result, settings }: SharedRoll): string {
   const params = new URLSearchParams();

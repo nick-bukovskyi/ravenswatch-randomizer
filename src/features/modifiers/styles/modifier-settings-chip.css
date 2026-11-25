@@ -36,4 +36,12 @@
       var(--color-negative-500) 53% 100%
     );
   }
+
+  .modifier-settings-chip__swatch[data-selector='balanced'] {
+    background: linear-gradient(
+      90deg,
+      var(--color-positive-500) 0 50%,
+      var(--color-negative-500) 50% 100%
+    );
+  }
 }

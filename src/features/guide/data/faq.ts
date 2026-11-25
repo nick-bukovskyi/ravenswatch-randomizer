@@ -13,7 +13,7 @@ export const faq: readonly FaqEntry[] = [
   },
   {
     question: 'What do Custom Mode modifiers do?',
-    answer: `Custom Mode lets you change the rules of a run with ${modifiers.length} modifiers. Good modifiers are bonuses, like Light Feet, which gives your dash a very short cooldown. Bad modifiers are maluses that make the Nightmare fight harder, like Berserker Foes, whose enemies hit harder as their health drops. Roll good ones, bad ones or a mix.`,
+    answer: `Custom Mode lets you change the rules of a run with ${modifiers.length} modifiers. Good modifiers are bonuses, like Light Feet, which gives your dash a very short cooldown. Bad modifiers are maluses that make the Nightmare fight harder, like Berserker Foes, whose enemies hit harder as their health drops. Roll good ones, bad ones, a random mix, or a balanced split of both.`,
   },
   {
     question: 'How do modifiers change my score?',

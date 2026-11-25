@@ -308,6 +308,70 @@ describe('rollModifierIds', () => {
   });
 });
 
+describe('Balanced modifier rolls', () => {
+  it('keeps the good and bad counts within one of each other', () => {
+    for (const modifierCount of [1, 2, 3, 4, 5]) {
+      for (const seed of SEEDS) {
+        const { ids, shortfall } = rollModifierIds(
+          contextWith({ settings: { selector: 'balanced', modifierCount, partySize: 1 } }),
+          seededRandom(seed),
+        );
+        const good = ids.filter((id) => goodIds.includes(id)).length;
+
+        expect(ids).toHaveLength(modifierCount);
+        expect(shortfall).toBe(0);
+        expect(Math.abs(good - (modifierCount - good))).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  it('never rolls Living the Dream with Inflation, nor all three healing penalties', () => {
+    const kept: readonly ModifierId[] = ['ld', 'lf', 'ql', 'in', 'di', 'df', 'bl'];
+    const bans = {
+      heroIds: [],
+      modifierIds: [...goodIds, ...badIds].filter((id) => !kept.includes(id)),
+    };
+
+    for (const seed of SEEDS) {
+      const { ids } = rollModifierIds(
+        contextWith({ bans, settings: { selector: 'balanced', modifierCount: 5, partySize: 1 } }),
+        seededRandom(seed),
+      );
+
+      expect(ids.includes('ld') && ids.includes('in')).toBe(false);
+      expect(['di', 'df', 'bl'].every((id) => ids.some((rolledId) => rolledId === id))).toBe(false);
+    }
+  });
+
+  it('fills from the other polarity when bans use one up', () => {
+    const bans = { heroIds: [], modifierIds: goodIds.filter((id) => id !== 'lf') };
+
+    const { ids, shortfall } = rollModifierIds(
+      contextWith({ bans, settings: { selector: 'balanced', modifierCount: 5, partySize: 1 } }),
+      seededRandom(1),
+    );
+
+    expect(ids).toHaveLength(5);
+    expect(shortfall).toBe(0);
+    expect(ids.filter((id) => goodIds.includes(id))).toEqual(['lf']);
+  });
+
+  it('keeps the polarity of a re-rolled card', () => {
+    const context = contextWith({
+      result: { heroIds: [], modifierIds: ['lf', 'ql', 'sh', 'co', 'di'] },
+      settings: { selector: 'balanced', modifierCount: 5, partySize: 1 },
+    });
+
+    for (const seed of SEEDS) {
+      const goodReplaced = replaceCard(context, 'modifier', 0, seededRandom(seed));
+      const badReplaced = replaceCard(context, 'modifier', 3, seededRandom(seed));
+
+      expect(goodIds).toContain(goodReplaced?.modifierIds[0]);
+      expect(badIds).toContain(badReplaced?.modifierIds[3]);
+    }
+  });
+});
+
 describe('replaceCard', () => {
   it('replaces only the chosen hero with one that is not shown or banned', () => {
     const shown: HeroesAndModifiers = { heroIds: ['sc', 'ju', 'ro'], modifierIds: [] };

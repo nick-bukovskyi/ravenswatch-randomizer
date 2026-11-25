@@ -15,7 +15,7 @@ describe('encodeShareQuery', () => {
     expect(query).toBe('h=scju&m=qlcoin&t=a&n=3&p=2');
   });
 
-  it('writes g and b for the good and bad selectors and leaves out empty card lists', () => {
+  it('writes g, b and e for the good, bad and balanced selectors and leaves out empty card lists', () => {
     expect(
       encodeShareQuery({
         result: { heroIds: ['sc'], modifierIds: [] },
@@ -34,6 +34,12 @@ describe('encodeShareQuery', () => {
         settings: { selector: 'both', modifierCount: 2, partySize: 1 },
       }),
     ).toBe('m=qlco&t=a&n=2&p=1');
+    expect(
+      encodeShareQuery({
+        result: { heroIds: [], modifierIds: ['ql', 'co'] },
+        settings: { selector: 'balanced', modifierCount: 2, partySize: 1 },
+      }),
+    ).toBe('m=qlco&t=e&n=2&p=1');
   });
 });
 

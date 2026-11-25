@@ -1,13 +1,16 @@
 import { heroes, type HeroId } from '../../heroes/data/heroes.ts';
 import {
+  BALANCED_LIMITS,
+  modifierById,
   modifiers,
   type Modifier,
   type ModifierId,
   type ModifierPolarity,
 } from '../../modifiers/data/modifiers.ts';
 
-export const MODIFIER_SELECTORS = ['good', 'bad', 'both'] as const satisfies readonly (
-  ModifierPolarity | 'both'
+/** `both` mixes at random; `balanced` keeps the good and bad counts within one of each other */
+export const MODIFIER_SELECTORS = ['good', 'bad', 'both', 'balanced'] as const satisfies readonly (
+  ModifierPolarity | 'both' | 'balanced'
 )[];
 
 export type ModifierSelector = (typeof MODIFIER_SELECTORS)[number];
@@ -89,7 +92,15 @@ export function rollModifierIds(
     previous: result.modifierIds,
     locked: locks.modifierIds,
     size: settings.modifierCount,
-    candidates: (chosen) => availableModifiers(settings.selector, bans, chosen),
+    candidates: (chosen) =>
+      modifierIds(
+        modifierPicks({
+          selector: settings.selector,
+          available: availableModifiers(settings.selector, bans, chosen),
+          chosen,
+          size: settings.modifierCount,
+        }),
+      ),
     random,
   });
 
@@ -186,16 +197,68 @@ function availableModifiers(
   selector: ModifierSelector,
   bans: HeroesAndModifiers,
   chosen: readonly ModifierId[],
-): ModifierId[] {
-  return modifiers
-    .filter(
-      (modifier) =>
-        (selector === 'both' || modifier.polarity === selector) &&
-        !bans.modifierIds.includes(modifier.id) &&
-        !chosen.includes(modifier.id) &&
-        isCompatible(modifier, chosen),
-    )
-    .map((modifier) => modifier.id);
+): Modifier[] {
+  return modifiers.filter(
+    (modifier) =>
+      matchesSelector(modifier, selector) &&
+      !bans.modifierIds.includes(modifier.id) &&
+      !chosen.includes(modifier.id) &&
+      isCompatible(modifier, chosen),
+  );
+}
+
+function matchesSelector(modifier: Modifier, selector: ModifierSelector): boolean {
+  switch (selector) {
+    case 'good':
+    case 'bad':
+      return modifier.polarity === selector;
+    case 'both':
+    case 'balanced':
+      return true;
+  }
+}
+
+/**
+ * Balanced allows a polarity while it has fewer than half the slots (rounded up), so 5 rolls 3 + 2;
+ * when bans use one polarity up, the other fills in
+ */
+function modifierPicks({
+  selector,
+  available,
+  chosen,
+  size,
+}: {
+  selector: ModifierSelector;
+  available: readonly Modifier[];
+  chosen: readonly ModifierId[];
+  size: number;
+}): readonly Modifier[] {
+  if (selector !== 'balanced') {
+    return available;
+  }
+
+  const allowed = available.filter((modifier) => withinBalancedLimits(modifier, chosen));
+  const polarityCap = Math.ceil(size / 2);
+  const underCap = allowed.filter(
+    (modifier) => countPolarity(chosen, modifier.polarity) < polarityCap,
+  );
+
+  return underCap.length > 0 ? underCap : allowed;
+}
+
+function withinBalancedLimits(modifier: Modifier, chosen: readonly ModifierId[]): boolean {
+  return BALANCED_LIMITS.every(
+    ({ ids, max }) =>
+      !ids.includes(modifier.id) || chosen.filter((id) => ids.includes(id)).length < max,
+  );
+}
+
+function countPolarity(ids: readonly ModifierId[], polarity: ModifierPolarity): number {
+  return ids.filter((id) => modifierById.get(id)?.polarity === polarity).length;
+}
+
+function modifierIds(picks: readonly Modifier[]): ModifierId[] {
+  return picks.map((modifier) => modifier.id);
 }
 
 function fillSlots<T extends string>({
@@ -255,8 +318,24 @@ function modifierReplacements(
 
   // The replaced card leaves, so only the other cards constrain the pick
   const otherIds = result.modifierIds.filter((id) => id !== currentId);
+  const picks = modifierPicks({
+    selector: settings.selector,
+    available: availableModifiers(settings.selector, bans, otherIds).filter(
+      (modifier) => modifier.id !== currentId,
+    ),
+    chosen: otherIds,
+    size: result.modifierIds.length,
+  });
 
-  return availableModifiers(settings.selector, bans, otherIds).filter((id) => id !== currentId);
+  if (settings.selector !== 'balanced') {
+    return modifierIds(picks);
+  }
+
+  // Balanced keeps the replaced card's polarity when it can, so the split stays as rolled
+  const currentPolarity = modifierById.get(currentId)?.polarity;
+  const samePolarity = picks.filter((modifier) => modifier.polarity === currentPolarity);
+
+  return modifierIds(samePolarity.length > 0 ? samePolarity : picks);
 }
 
 function pickRandom<T>(items: readonly T[], random: Random): T | undefined {
