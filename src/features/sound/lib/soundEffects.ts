@@ -1,43 +1,38 @@
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
+import { modifierById } from '../../modifiers/data/modifiers.ts';
 import type { CardKind } from '../../roll/lib/roll.ts';
 import { onRollEvent } from '../../roll/lib/rollEvents.ts';
-import type { SoundName, SoundPlayer, Voice } from './soundPlayer.ts';
+import type { SoundName, SoundPlayer } from './soundPlayer.ts';
 
-const LAND_MIN_INTERVAL_MS = 40;
-/** A restore reveals both groups at once and each reports its own end; they share one flourish */
-const FLOURISH_MIN_INTERVAL_MS = 1500;
-/** Semitones above the first chime (a minor arpeggio) */
-const HERO_CHIME_STEPS = [0, 3, 7, 10, 12] as const;
-const HERO_CHIME_BASE_RATE = 0.75;
+/** Beats closer than this (a restore reveals both groups at once) play once */
+const SAME_BEAT_MS = 40;
+/** The ban seal (BanSeal) mounts and its spring reaches the tile this long after the click */
+const SEAL_CONTACT_MS = 100;
+/** The wood click tuned into D for each landing hero (D4, E4, F#4, A4, B4 from its own pitch) */
+const HERO_NOTE_RATES = [1.138, 1.278, 0.717, 0.853, 0.957] as const;
+const BAD_MODIFIER_RATE = 0.84;
+/** Unlock and unban play the switch tap a little higher than lock and ban */
+const UNLOCK_RATE = 1.1;
 
 let player: SoundPlayer | null = null;
-let lastLandAt = Number.NEGATIVE_INFINITY;
-let lastFlourishAt = Number.NEGATIVE_INFINITY;
-let heroLandings = 0;
+let lastStampAt = Number.NEGATIVE_INFINITY;
+let lastRingAt = Number.NEGATIVE_INFINITY;
 
 export function startSoundEffects(): () => void {
   const stopGestureWatch = loadOnFirstGesture();
   const unsubscribers = [
-    onRollEvent('revealStart', ({ cards }) => {
-      heroLandings = 0;
-
-      if (cards > 0) {
-        playDeal();
+    onRollEvent('cardStart', ({ kind }) => {
+      // Only hero cards draw a frame
+      if (kind === 'hero') {
+        play('inkSwell');
       }
     }),
-    onRollEvent('cardLand', ({ kind }) => playLanding(kind)),
-    onRollEvent('revealEnd', ({ cards }) => {
-      if (cards > 0 && performance.now() - lastFlourishAt >= FLOURISH_MIN_INTERVAL_MS) {
-        lastFlourishAt = performance.now();
-        playFlourish();
-      }
-
-      // So a later single re-roll restarts the chime from its first note
-      heroLandings = 0;
-    }),
+    onRollEvent('cardStamp', playStamp),
+    onRollEvent('cardRing', ({ kind, id, index }) => playRing(kind, id, index)),
+    onRollEvent('scoreTick', () => play('typewriterHit')),
     useRandomizerStore.subscribe((state, previous) => {
-      if (state.muted !== previous.muted) {
-        applyMuted(state.muted);
+      if (state.volume !== previous.volume) {
+        player?.setVolume(state.volume);
       }
     }),
   ];
@@ -51,60 +46,70 @@ export function startSoundEffects(): () => void {
   };
 }
 
-export function playUiClick(): void {
-  play('click', { volume: 0.32, rate: vary(1, 0.04) });
+export function playLock(): void {
+  play('switchTap');
 }
 
-function playDeal(): void {
-  play(Math.random() < 0.5 ? 'cardSlideA' : 'cardSlideB', {
-    volume: vary(0.26, 0.15),
-    rate: vary(1, 0.06),
-  });
+export function playUnlock(): void {
+  play('switchTap', UNLOCK_RATE);
 }
 
-function playLanding(kind: CardKind): void {
+export function playBan(): void {
+  window.setTimeout(playLock, SEAL_CONTACT_MS);
+}
+
+export function playUnban(): void {
+  playUnlock();
+}
+
+export function playRefusal(): void {
+  play('doubleKnock');
+}
+
+export function playVolumePreview(): void {
+  play('woodClick');
+}
+
+function playStamp(): void {
   const now = performance.now();
 
-  if (now - lastLandAt < LAND_MIN_INTERVAL_MS) {
+  if (now - lastStampAt < SAME_BEAT_MS) {
     return;
   }
 
-  lastLandAt = now;
+  lastStampAt = now;
+  play('lowHit', vary(1, 0.03));
+}
+
+function playRing(kind: CardKind, id: string, index: number): void {
+  const now = performance.now();
+
+  if (now - lastRingAt < SAME_BEAT_MS) {
+    return;
+  }
+
+  lastRingAt = now;
 
   switch (kind) {
     case 'hero': {
-      const step = HERO_CHIME_STEPS[Math.min(heroLandings, HERO_CHIME_STEPS.length - 1)] ?? 0;
-
-      heroLandings += 1;
-      play('cardPlace', { volume: 0.6, rate: vary(0.92, 0.03) });
-      play('glass', { volume: 0.13, rate: HERO_CHIME_BASE_RATE * 2 ** (step / 12) });
+      play('woodClick', HERO_NOTE_RATES[index % HERO_NOTE_RATES.length] ?? 1);
 
       return;
     }
     case 'modifier': {
-      play('cardPlace', { volume: 0.34, rate: vary(1.14, 0.05) });
+      play('woodClick', modifierById.get(id)?.polarity === 'bad' ? BAD_MODIFIER_RATE : 1);
 
       return;
     }
   }
 }
 
-function playFlourish(): void {
-  play('bong', { volume: 0.34, rate: 0.68 });
-  play('glass', { volume: 0.09, rate: 0.5 });
-}
-
-function play(name: SoundName, voice: Voice): void {
-  player?.play(name, voice);
+function play(name: SoundName, rate = 1): void {
+  player?.play(name, rate);
 }
 
 function vary(center: number, spread: number): number {
   return center * (1 + (Math.random() * 2 - 1) * spread);
-}
-
-function applyMuted(muted: boolean): void {
-  // No audio context before loading; loadSounds applies the setting
-  player?.setMuted(muted);
 }
 
 /** Browsers block creating the audio context before a user gesture */
@@ -137,7 +142,7 @@ function loadOnFirstGesture(): () => void {
 function loadSounds(): void {
   import('./soundPlayer.ts')
     .then(({ createSoundPlayer }) => {
-      player = createSoundPlayer(useRandomizerStore.getState().muted);
+      player = createSoundPlayer(useRandomizerStore.getState().volume);
     })
     .catch(() => {
       // Sounds are optional, so a failed download leaves the app silent

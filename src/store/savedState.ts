@@ -20,7 +20,8 @@ export interface HistoryEntry {
 export interface SavedState {
   readonly settings: RollSettings;
   readonly bans: HeroesAndModifiers;
-  readonly muted: boolean;
+  /** Master sound volume from 0 (muted) to 1 */
+  readonly volume: number;
   readonly history: readonly HistoryEntry[];
 }
 
@@ -62,9 +63,22 @@ export function parseSavedState(stored: unknown, fallback: SavedState): SavedSta
     settings:
       'settings' in stored ? parseSettings(stored.settings, fallback.settings) : fallback.settings,
     bans: 'bans' in stored ? parseBans(stored.bans) : fallback.bans,
-    muted: 'muted' in stored && typeof stored.muted === 'boolean' ? stored.muted : fallback.muted,
+    volume: parseVolume(stored, fallback.volume),
     history: 'history' in stored ? parseHistory(stored.history) : fallback.history,
   };
+}
+
+export function clampVolume(volume: number): number {
+  return Math.min(1, Math.max(0, volume));
+}
+
+function parseVolume(stored: object, fallback: number): number {
+  if ('volume' in stored && typeof stored.volume === 'number' && Number.isFinite(stored.volume)) {
+    return clampVolume(stored.volume);
+  }
+
+  // Saved before the volume control existed: a muted player stays muted
+  return 'muted' in stored && stored.muted === true ? 0 : fallback;
 }
 
 function parseSettings(stored: unknown, fallback: RollSettings): RollSettings {

@@ -2,7 +2,6 @@ import { useId, useRef, type MouseEvent, type ReactNode } from 'react';
 
 import { Icon } from '../../../shared/ui/Icon.tsx';
 import { Tooltip } from '../../../shared/ui/Tooltip.tsx';
-import { playUiClick } from '../../sound/lib/soundEffects.ts';
 import { RerollFocusContext } from '../lib/rerollFocusContext.ts';
 import type { CardKind } from '../lib/roll.ts';
 import { RollButton } from './RollButton.tsx';
@@ -22,8 +21,6 @@ export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelP
   const rerollFocusRef = useRef<number | null>(null);
 
   function handleReset(event: MouseEvent<HTMLButtonElement>) {
-    playUiClick();
-
     // The reset button unmounts with the cards, so the focus moves to Roll
     if (event.currentTarget === document.activeElement) {
       rollButtonRef.current?.focus({ preventScroll: true });

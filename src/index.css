@@ -27,6 +27,7 @@
 @import './shared/ui/styles/tooltip.css';
 @import './features/roll/styles/settings-chip.css';
 @import './features/share/styles/share-button.css';
+@import './features/sound/styles/volume-slider.css';
 @import './shared/ui/styles/game-dialog.css';
 @import './features/roll/styles/card-actions.css';
 @import './features/heroes/styles/hero-card.css';

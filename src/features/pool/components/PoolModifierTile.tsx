@@ -4,6 +4,7 @@ import { useId } from 'react';
 import { formatScorePercent } from '../../../shared/lib/displayText.ts';
 import { STAGGER_ITEM_VARIANTS } from '../../../shared/lib/staggerMotion.ts';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
+import { playBan, playUnban } from '../../sound/lib/soundEffects.ts';
 import { IconTile } from '../../modifiers/components/IconTile.tsx';
 import type { Modifier } from '../../modifiers/data/modifiers.ts';
 import { useBanGesture } from '../hooks/useBanGesture.ts';
@@ -19,7 +20,17 @@ export function PoolModifierTile({ modifier }: PoolModifierTileProps) {
   const toggleModifierBan = useRandomizerStore((state) => state.toggleModifierBan);
   const descriptionId = useId();
 
-  const banGesture = useBanGesture(() => toggleModifierBan(modifier.id));
+  function handleToggle() {
+    if (isBanned) {
+      playUnban();
+    } else {
+      playBan();
+    }
+
+    toggleModifierBan(modifier.id);
+  }
+
+  const banGesture = useBanGesture(handleToggle);
 
   return (
     <motion.li variants={STAGGER_ITEM_VARIANTS}>

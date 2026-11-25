@@ -2,7 +2,7 @@ import gsap from 'gsap';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { usePrefersReducedMotion } from '../../../shared/hooks/usePrefersReducedMotion.ts';
-import { INK_STAGGER_MS, inkLandAt, inkSettledAt } from '../lib/inkTiming.ts';
+import { INK_STAGGER_MS, inkRingAt, inkStampAt } from '../lib/inkTiming.ts';
 import type { CardKind } from '../lib/roll.ts';
 import { emitRollEvent } from '../lib/rollEvents.ts';
 
@@ -77,24 +77,19 @@ export function useInkReveal<Id extends string>({
     if (scheduled.kind === 'roll' || scheduled.kind === 'reset') {
       killAll(pending);
     }
-    if (scheduled.kind === 'roll') {
-      emitRollEvent('revealStart', { cards: scheduled.cards.length });
-    }
     if (scheduled.kind === 'initial') {
       return;
     }
 
-    for (const card of scheduled.cards) {
-      schedule(inkLandAt(kind, card.delayMs, prefersReducedMotion), () =>
-        emitRollEvent('cardLand', { kind }),
+    scheduled.cards.forEach((card, index) => {
+      schedule(card.delayMs, () => emitRollEvent('cardStart', { kind }));
+      schedule(inkStampAt(kind, card.delayMs, prefersReducedMotion), () =>
+        emitRollEvent('cardStamp', { kind }),
       );
-    }
-
-    if (scheduled.kind === 'roll') {
-      schedule(inkSettledAt(kind, lastDelay(scheduled), prefersReducedMotion), () =>
-        emitRollEvent('revealEnd', { cards: scheduled.cards.length }),
+      schedule(inkRingAt(kind, card.delayMs, prefersReducedMotion), () =>
+        emitRollEvent('cardRing', { kind, id: card.id, index }),
       );
-    }
+    });
   });
 
   useEffect(() => scheduleEvents(change), [change]);

@@ -1,7 +1,7 @@
 import { HistoryDialog } from '../../features/history/components/HistoryDialog.tsx';
 import { PoolDialog } from '../../features/pool/components/PoolDialog.tsx';
 import { ShareButton } from '../../features/share/components/ShareButton.tsx';
-import { SoundToggle } from '../../features/sound/components/SoundToggle.tsx';
+import { VolumeControl } from '../../features/sound/components/VolumeControl.tsx';
 import { Wordmark } from './Wordmark.tsx';
 
 export function Header() {
@@ -12,7 +12,7 @@ export function Header() {
         <PoolDialog />
         <HistoryDialog />
         <ShareButton />
-        <SoundToggle />
+        <VolumeControl />
       </div>
     </header>
   );

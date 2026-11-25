@@ -3,18 +3,23 @@
 import type { CardKind } from './roll.ts';
 
 export interface RollEventMap {
-  revealStart: { cards: number };
-  cardLand: { kind: CardKind };
-  revealEnd: { cards: number };
+  /** A card starts drawing: every card of a roll, or the one card a re-roll replaces */
+  cardStart: { kind: CardKind };
+  /** The card's portrait or tile stamp touches down */
+  cardStamp: { kind: CardKind };
+  /** The ring bursts; `index` is the card's place among the cards revealed together */
+  cardRing: { kind: CardKind; id: string; index: number };
+  scoreTick: { tick: number };
 }
 
 type RollEventName = keyof RollEventMap;
 type Listener<Name extends RollEventName> = (detail: RollEventMap[Name]) => void;
 
 const listeners: { [Name in RollEventName]: Set<Listener<Name>> } = {
-  revealStart: new Set(),
-  cardLand: new Set(),
-  revealEnd: new Set(),
+  cardStart: new Set(),
+  cardStamp: new Set(),
+  cardRing: new Set(),
+  scoreTick: new Set(),
 };
 
 export function onRollEvent<Name extends RollEventName>(

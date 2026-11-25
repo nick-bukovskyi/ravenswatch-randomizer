@@ -3,6 +3,7 @@ import { use, type MouseEvent } from 'react';
 import { Icon } from '../../../shared/ui/Icon.tsx';
 import { Tooltip } from '../../../shared/ui/Tooltip.tsx';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
+import { playLock, playUnlock } from '../../sound/lib/soundEffects.ts';
 import { RerollFocusContext } from '../lib/rerollFocusContext.ts';
 import { canReplaceCard, type CardKind } from '../lib/roll.ts';
 
@@ -38,6 +39,16 @@ export function CardActions({ kind, slot, name, isLocked, className, onRefuse }:
     rerollCard(kind, slot);
   }
 
+  function handleLockToggle() {
+    if (isLocked) {
+      playUnlock();
+    } else {
+      playLock();
+    }
+
+    toggleLock(kind, slot);
+  }
+
   function takeOverFocus(button: HTMLButtonElement | null) {
     if (button && rerollFocusRef.current === slot) {
       rerollFocusRef.current = null;
@@ -65,7 +76,7 @@ export function CardActions({ kind, slot, name, isLocked, className, onRefuse }:
           aria-label={`Lock ${name}`}
           aria-pressed={isLocked}
           className="card-actions__button"
-          onClick={() => toggleLock(kind, slot)}
+          onClick={handleLockToggle}
         >
           <Icon name={isLocked ? 'lock' : 'unlock'} />
         </button>

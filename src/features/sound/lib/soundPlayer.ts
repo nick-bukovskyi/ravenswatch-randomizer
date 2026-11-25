@@ -1,55 +1,53 @@
 import { Howl, Howler } from 'howler';
 
-import bongMp3 from '../../../assets/sounds/bong_001.mp3';
-import bongOgg from '../../../assets/sounds/bong_001.ogg';
-import cardPlaceMp3 from '../../../assets/sounds/card-place-1.mp3';
-import cardPlaceOgg from '../../../assets/sounds/card-place-1.ogg';
-import cardSlideAMp3 from '../../../assets/sounds/card-slide-2.mp3';
-import cardSlideAOgg from '../../../assets/sounds/card-slide-2.ogg';
-import cardSlideBMp3 from '../../../assets/sounds/card-slide-3.mp3';
-import cardSlideBOgg from '../../../assets/sounds/card-slide-3.ogg';
-import clickMp3 from '../../../assets/sounds/click_001.mp3';
-import clickOgg from '../../../assets/sounds/click_001.ogg';
-import glassMp3 from '../../../assets/sounds/glass_001.mp3';
-import glassOgg from '../../../assets/sounds/glass_001.ogg';
+import doubleKnockMp3 from '../../../assets/sounds/double-knock.mp3';
+import doubleKnockOgg from '../../../assets/sounds/double-knock.ogg';
+import inkSwellMp3 from '../../../assets/sounds/ink-swell.mp3';
+import inkSwellOgg from '../../../assets/sounds/ink-swell.ogg';
+import lowHitMp3 from '../../../assets/sounds/low-hit.mp3';
+import lowHitOgg from '../../../assets/sounds/low-hit.ogg';
+import switchTapMp3 from '../../../assets/sounds/switch-tap.mp3';
+import switchTapOgg from '../../../assets/sounds/switch-tap.ogg';
+import typewriterHitMp3 from '../../../assets/sounds/typewriter-hit.mp3';
+import typewriterHitOgg from '../../../assets/sounds/typewriter-hit.ogg';
+import woodClickMp3 from '../../../assets/sounds/wood-click.mp3';
+import woodClickOgg from '../../../assets/sounds/wood-click.ogg';
 
-// MP3 is the fallback for browsers without Ogg (older Safari)
+/**
+ * The files share one peak level (see CREDITS.md); `level` lowers the ones that still sound
+ * louder, under the master volume. MP3 is the fallback for browsers without Ogg (older Safari)
+ */
 const SOURCES = {
-  cardSlideA: [cardSlideAOgg, cardSlideAMp3],
-  cardSlideB: [cardSlideBOgg, cardSlideBMp3],
-  cardPlace: [cardPlaceOgg, cardPlaceMp3],
-  glass: [glassOgg, glassMp3],
-  bong: [bongOgg, bongMp3],
-  click: [clickOgg, clickMp3],
-} satisfies Record<string, readonly [ogg: string, mp3: string]>;
+  inkSwell: { files: [inkSwellOgg, inkSwellMp3], level: 0.4 },
+  lowHit: { files: [lowHitOgg, lowHitMp3], level: 1 },
+  woodClick: { files: [woodClickOgg, woodClickMp3], level: 1 },
+  typewriterHit: { files: [typewriterHitOgg, typewriterHitMp3], level: 0.4 },
+  switchTap: { files: [switchTapOgg, switchTapMp3], level: 0.6 },
+  doubleKnock: { files: [doubleKnockOgg, doubleKnockMp3], level: 1 },
+} satisfies Record<string, { files: readonly [ogg: string, mp3: string]; level: number }>;
 
 export type SoundName = keyof typeof SOURCES;
 
-export interface Voice {
-  readonly volume: number;
-  readonly rate: number;
-}
-
 export interface SoundPlayer {
-  play: (name: SoundName, voice: Voice) => void;
-  setMuted: (muted: boolean) => void;
+  play: (name: SoundName, rate: number) => void;
+  setVolume: (volume: number) => void;
 }
 
 /** Loaded on the first user gesture, so howler and the sound files stay out of the main bundle */
-export function createSoundPlayer(muted: boolean): SoundPlayer {
+export function createSoundPlayer(volume: number): SoundPlayer {
   const sounds: Record<SoundName, Howl> = {
-    cardSlideA: createSound('cardSlideA'),
-    cardSlideB: createSound('cardSlideB'),
-    cardPlace: createSound('cardPlace'),
-    glass: createSound('glass'),
-    bong: createSound('bong'),
-    click: createSound('click'),
+    inkSwell: createSound('inkSwell'),
+    lowHit: createSound('lowHit'),
+    woodClick: createSound('woodClick'),
+    typewriterHit: createSound('typewriterHit'),
+    switchTap: createSound('switchTap'),
+    doubleKnock: createSound('doubleKnock'),
   };
 
-  Howler.mute(muted);
+  Howler.volume(volume);
 
   return {
-    play: (name, { volume, rate }) => {
+    play: (name, rate) => {
       const sound = sounds[name];
 
       // Not loaded or failed: skip rather than queue, so a late sound never plays off the beat
@@ -57,15 +55,14 @@ export function createSoundPlayer(muted: boolean): SoundPlayer {
         return;
       }
 
-      const id = sound.play();
-
-      sound.volume(volume, id);
-      sound.rate(rate, id);
+      sound.rate(rate, sound.play());
     },
-    setMuted: (isMuted) => Howler.mute(isMuted),
+    setVolume: (nextVolume) => Howler.volume(nextVolume),
   };
 }
 
 function createSound(name: SoundName): Howl {
-  return new Howl({ src: [...SOURCES[name]], format: ['ogg', 'mp3'] });
+  const { files, level } = SOURCES[name];
+
+  return new Howl({ src: [...files], format: ['ogg', 'mp3'], volume: level });
 }

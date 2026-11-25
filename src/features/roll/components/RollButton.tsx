@@ -2,7 +2,6 @@ import type { Ref } from 'react';
 
 import { Button } from '../../../shared/ui/Button.tsx';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
-import { playUiClick } from '../../sound/lib/soundEffects.ts';
 import type { CardKind } from '../lib/roll.ts';
 
 interface RollButtonProps {
@@ -20,17 +19,12 @@ export function RollButton({ kind, ref }: RollButtonProps) {
     kind === 'hero' ? state.result.heroIds.length === 0 : state.result.modifierIds.length === 0,
   );
 
-  function handleClick() {
-    playUiClick();
-    roll();
-  }
-
   return (
     <Button
       ref={ref}
       data-waiting={isEmpty}
       className="roll-button w-44 px-[22px] max-[560px]:order-3 max-[560px]:w-full"
-      onClick={handleClick}
+      onClick={roll}
     >
       {LABELS[kind]}
     </Button>

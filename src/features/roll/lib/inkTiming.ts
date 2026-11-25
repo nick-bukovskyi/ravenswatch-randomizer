@@ -6,11 +6,14 @@ export const INK_STAGGER_MS: Record<CardKind, number> = { hero: 420, modifier: 3
 
 const LEAVE_STAGGER_MS: Record<CardKind, number> = { hero: 140, modifier: 90 };
 
-/** The ring around the portrait or tile pops */
-const LAND_AT_MS: Record<CardKind, number> = { hero: 1130, modifier: 330 };
+/**
+ * The portrait or tile stamp touches down: `ink-stamp` starts at +900 / +60 and its scale reaches 1
+ * 64 ms in, through the `--ease-ink-stamp` overshoot
+ */
+const STAMP_AT_MS: Record<CardKind, number> = { hero: 964, modifier: 124 };
 
-/** The name or the score has finished */
-const SETTLED_AT_MS: Record<CardKind, number> = { hero: 1900, modifier: 1300 };
+/** The ring around the portrait or tile pops */
+const RING_AT_MS: Record<CardKind, number> = { hero: 1130, modifier: 330 };
 
 const LEFT_AT_MS: Record<CardKind, number> = { hero: 800, modifier: 720 };
 
@@ -20,16 +23,12 @@ const REROLL_SCORE_AT_MS = 900;
 
 const ROLL_SCORE_AFTER_MS = 1200;
 
-export function inkLandAt(kind: CardKind, delayMs: number, prefersReducedMotion: boolean): number {
-  return prefersReducedMotion ? delayMs : delayMs + LAND_AT_MS[kind];
+export function inkStampAt(kind: CardKind, delayMs: number, prefersReducedMotion: boolean): number {
+  return prefersReducedMotion ? delayMs : delayMs + STAMP_AT_MS[kind];
 }
 
-export function inkSettledAt(
-  kind: CardKind,
-  lastDelayMs: number,
-  prefersReducedMotion: boolean,
-): number {
-  return lastDelayMs + (prefersReducedMotion ? REDUCED_FADE_MS : SETTLED_AT_MS[kind]);
+export function inkRingAt(kind: CardKind, delayMs: number, prefersReducedMotion: boolean): number {
+  return prefersReducedMotion ? delayMs : delayMs + RING_AT_MS[kind];
 }
 
 export function leaveDuration(

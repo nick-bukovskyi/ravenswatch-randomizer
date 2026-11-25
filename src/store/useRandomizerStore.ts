@@ -24,6 +24,7 @@ import {
   type SharedRoll,
 } from '../features/share/lib/shareUrl.ts';
 import {
+  clampVolume,
   HISTORY_LIMIT,
   parseSavedState,
   safeLocalStorage,
@@ -49,15 +50,17 @@ export interface RandomizerState extends SavedState, RollContext {
   toggleHeroBan: (id: HeroId) => boolean;
   toggleModifierBan: (id: ModifierId) => void;
   resetBans: () => void;
-  toggleMuted: () => void;
+  setVolume: (volume: number) => void;
   restoreFromQuery: (query: string) => void;
   clearHistory: () => void;
 }
 
+const DEFAULT_VOLUME = 0.25;
+
 const savedDefaults: SavedState = {
   settings: DEFAULT_SETTINGS,
   bans: NO_IDS,
-  muted: false,
+  volume: DEFAULT_VOLUME,
   history: [],
 };
 
@@ -169,7 +172,7 @@ export const useRandomizerStore = create<RandomizerState>()(
 
       resetBans: () => set({ bans: NO_IDS }),
 
-      toggleMuted: () => set({ muted: !get().muted }),
+      setVolume: (volume) => set({ volume: clampVolume(volume) }),
 
       restoreFromQuery: (query) => {
         const { settings, heroRollId, modifierRollId } = get();
@@ -192,10 +195,10 @@ export const useRandomizerStore = create<RandomizerState>()(
       version: 1,
       storage: createJSONStorage(() => safeLocalStorage),
       // No result or locks: the URL carries the roll, and locks never outlive the page
-      partialize: ({ settings, bans, muted, history }): SavedState => ({
+      partialize: ({ settings, bans, volume, history }): SavedState => ({
         settings,
         bans,
-        muted,
+        volume,
         history,
       }),
       merge: (stored, current) => ({ ...current, ...parseSavedState(stored, current) }),

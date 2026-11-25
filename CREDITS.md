@@ -2,13 +2,17 @@
 
 ## Sound effects
 
-Sounds in `src/assets/sounds/` are by [Kenney](https://www.kenney.nl), released under
-[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) (credit is optional):
+Sounds in `src/assets/sounds/` were trimmed, converted to mono (except `ink-swell`) and leveled to the
+same loudness. Each ships as Ogg Vorbis plus an MP3 copy for browsers without Ogg support.
 
-- Casino Audio 1.1: `card-slide-2`, `card-slide-3`, `card-place-1` (leading silence trimmed, shortened, mono)
-- Interface Sounds 1.0: `glass_001`, `bong_001`, `click_001`
-
-Each sound ships as the Ogg Vorbis original or edit plus an MP3 copy for browsers without Ogg support.
+- `low-hit`: [LowHit_01](https://freesound.org/people/Faulkin/sounds/336495/) by Faulkin,
+  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
+- `wood-click`: [wood-click-1](https://freesound.org/people/husamalhomsi/sounds/500926/) by husamalhomsi,
+  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
+- `typewriter-hit`: "Vintage typewriter hit" (#1369) and `switch-tap`: "On or off light switch tap"
+  (#2585) from [Mixkit](https://mixkit.co/free-sound-effects/), under the
+  [Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree)
+- `ink-swell` and `double-knock`: synthesized for this project with the Web Audio API
 
 ## Logo letter
 

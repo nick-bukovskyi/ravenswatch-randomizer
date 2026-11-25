@@ -5,6 +5,7 @@ import { toDisplayName } from '../../../shared/lib/displayText.ts';
 import { STAGGER_ITEM_VARIANTS } from '../../../shared/lib/staggerMotion.ts';
 import { PortraitFrame } from '../../../shared/ui/PortraitFrame.tsx';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
+import { playBan, playRefusal, playUnban } from '../../sound/lib/soundEffects.ts';
 import type { Hero } from '../../heroes/data/heroes.ts';
 import { useBanGesture } from '../hooks/useBanGesture.ts';
 import { BanSeal } from './BanSeal.tsx';
@@ -24,9 +25,16 @@ export function PoolHeroTile({ hero, onLastHeroRefused }: PoolHeroTileProps) {
 
   function handleToggle() {
     if (toggleHeroBan(hero.id)) {
+      if (isBanned) {
+        playUnban();
+      } else {
+        playBan();
+      }
+
       return;
     }
 
+    playRefusal();
     onLastHeroRefused();
 
     if (!prefersReducedMotion) {

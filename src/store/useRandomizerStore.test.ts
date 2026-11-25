@@ -10,7 +10,7 @@ const initialState = useRandomizerStore.getState();
 const SAVED_DEFAULTS: SavedState = {
   settings: DEFAULT_SETTINGS,
   bans: NO_IDS,
-  muted: false,
+  volume: 0.5,
   history: [],
 };
 
@@ -126,7 +126,7 @@ describe('parseSavedState', () => {
     const saved: SavedState = {
       settings: { selector: 'bad', modifierCount: 3, partySize: 2 },
       bans: { heroIds: ['sc'], modifierIds: ['lf'] },
-      muted: true,
+      volume: 0.3,
       history: [{ query: 'h=sc&t=b&n=3&p=2', timestamp: 5 }],
     };
 
@@ -143,12 +143,22 @@ describe('parseSavedState', () => {
     const stored = {
       settings: { selector: 'worst', modifierCount: '3', partySize: 1.5 },
       bans: 'none',
-      muted: 'yes',
+      volume: 'loud',
       history: { query: 'h=sc' },
     };
 
     expect(parseSavedState(stored, SAVED_DEFAULTS)).toEqual(SAVED_DEFAULTS);
     expect(parseSavedState('corrupt', SAVED_DEFAULTS)).toEqual(SAVED_DEFAULTS);
+  });
+
+  it('keeps a muted player muted when the save predates the volume control', () => {
+    expect(parseSavedState({ muted: true }, SAVED_DEFAULTS).volume).toBe(0);
+    expect(parseSavedState({ muted: false }, SAVED_DEFAULTS).volume).toBe(0.5);
+  });
+
+  it('clamps the volume between muted and full', () => {
+    expect(parseSavedState({ volume: 3 }, SAVED_DEFAULTS).volume).toBe(1);
+    expect(parseSavedState({ volume: -1 }, SAVED_DEFAULTS).volume).toBe(0);
   });
 
   it('drops invalid history entries and entries past the limit', () => {
