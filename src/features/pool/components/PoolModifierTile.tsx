@@ -56,8 +56,12 @@ export function PoolModifierTile({ modifier }: PoolModifierTileProps) {
 
         <span className="min-w-0 flex-1">
           <span className="flex items-baseline justify-between gap-2">
-            <span className="text-lg leading-tight text-cream-bright decoration-crimson-300/80 decoration-2 transition-colors duration-300 text-engraved group-aria-pressed/tile:text-cream-muted group-aria-pressed/tile:line-through">
+            <span className="relative text-lg leading-tight text-cream-bright transition-colors duration-300 text-engraved group-aria-pressed/tile:text-cream-muted">
               {modifier.name}
+              {/* A clear copy on top carries the strike in front of the text and wraps the same way */}
+              <span aria-hidden="true" className="pool-tile__strike-layer">
+                <span className="pool-tile__strike">{modifier.name}</span>
+              </span>
             </span>
             <span
               data-polarity={modifier.polarity}

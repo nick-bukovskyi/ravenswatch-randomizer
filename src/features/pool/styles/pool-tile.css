@@ -6,6 +6,35 @@
     touch-action: manipulation;
   }
 
+  .pool-tile__strike-layer {
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    text-shadow: none;
+    pointer-events: none;
+  }
+
+  /*
+   * Inline, so the line draws across each line of a wrapped name in turn. It draws once the ban seal
+   * lands (SEAL_CONTACT_MS) and wipes back on unban
+   */
+  .pool-tile__strike {
+    background: linear-gradient(var(--color-crimson-300) 0 0) no-repeat 0 58% / 0 2px;
+    transition: background-size 0.2s ease-in;
+  }
+
+  .pool-tile[aria-pressed='true'] .pool-tile__strike {
+    background-size: 100% 2px;
+    transition: background-size 0.35s var(--ease-ink) 0.1s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pool-tile__strike,
+    .pool-tile[aria-pressed='true'] .pool-tile__strike {
+      transition: none;
+    }
+  }
+
   .pool-tile:focus-visible {
     outline: 2px solid var(--color-gold-100);
     outline-offset: 2px;
