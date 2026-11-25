@@ -58,7 +58,12 @@ export interface SettingsLimits {
   readonly modifierCount: CountLimits;
 }
 
-export const DEFAULT_SETTINGS: RollSettings = { selector: 'both', modifierCount: 5, partySize: 1 };
+export const DEFAULT_SETTINGS: RollSettings = {
+  selector: 'balanced',
+  modifierCount: 5,
+  partySize: 1,
+};
+
 export const NO_IDS: HeroesAndModifiers = { heroIds: [], modifierIds: [] };
 export const NO_SHORTFALL: RollShortfall = { heroes: 0, modifiers: 0 };
 export const MAX_PARTY_SIZE = 4;

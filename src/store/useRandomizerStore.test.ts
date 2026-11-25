@@ -31,7 +31,7 @@ describe('roll history', () => {
     rollOnlyHero('sc');
 
     expect(useRandomizerStore.getState().history).toEqual([
-      { query: 'h=sc&t=a&n=5&p=1', timestamp: 2_000 },
+      { query: 'h=sc&t=e&n=5&p=1', timestamp: 2_000 },
     ]);
   });
 
@@ -45,7 +45,7 @@ describe('roll history', () => {
     const newestFirst = rolledIds.slice(-HISTORY_LIMIT).reverse();
 
     expect(useRandomizerStore.getState().history.map((entry) => entry.query)).toEqual(
-      newestFirst.map((id) => `h=${id}&t=a&n=5&p=1`),
+      newestFirst.map((id) => `h=${id}&t=e&n=5&p=1`),
     );
   });
 
@@ -57,8 +57,8 @@ describe('roll history', () => {
     useRandomizerStore.getState().rerollCard('hero', 0);
 
     expect(useRandomizerStore.getState().history.map((entry) => entry.query)).toEqual([
-      'h=ju&t=a&n=5&p=1',
-      'h=al&t=a&n=5&p=1',
+      'h=ju&t=e&n=5&p=1',
+      'h=al&t=e&n=5&p=1',
     ]);
   });
 });
