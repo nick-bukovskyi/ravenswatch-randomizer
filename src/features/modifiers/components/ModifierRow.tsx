@@ -52,7 +52,7 @@ export function ModifierRow({
               </span>
             )}
           </h3>
-          <p className="modifier-row__description mt-[3px] font-body text-[15.5px] leading-[1.28] text-cream-muted">
+          <p className="modifier-row__description mt-[3px] font-body text-[14.5px] leading-[1.3] text-cream-muted">
             {modifier.description}
           </p>
         </div>
