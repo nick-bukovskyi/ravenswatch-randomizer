@@ -17,9 +17,10 @@ export function HeroEmptyState({ partySize, shouldAnimateIn }: HeroEmptyStatePro
       rollLabel="Roll heroes"
       drawText={partySize === 1 ? 'a hero' : `a party of ${partySize}`}
       shouldAnimateIn={shouldAnimateIn}
+      // Close to the height of the cards it gives way to; one and two heroes share a size (HeroPanel)
       className={cn(
-        partySize === 1 && 'min-h-[440px]',
-        partySize === 2 && 'min-h-[400px]',
+        partySize <= 2 && 'min-h-[400px]',
+        partySize === 1 && 'max-[560px]:min-h-[440px]',
         partySize >= 3 && 'min-h-[560px]',
       )}
     >

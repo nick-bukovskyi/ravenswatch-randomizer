@@ -39,11 +39,12 @@ export function HeroPanel() {
     >
       {party.length > 0 ? (
         <>
+          {/* One hero takes the two-hero size, so the panel keeps its height; phones show it larger */}
           <ul
             className={cn(
               'flex flex-wrap justify-center gap-x-4 gap-y-[18px]',
-              party.length === 1 && '[--hero-width:min(100%,280px)]',
-              party.length === 2 && '[--hero-width:min(250px,calc(50%_-_8px))]',
+              party.length <= 2 && '[--hero-width:min(250px,calc(50%_-_8px))]',
+              party.length === 1 && 'max-[560px]:[--hero-width:min(100%,280px)]',
               party.length >= 3 && '[--hero-width:min(215px,calc(50%_-_8px))]',
               isLeaving && 'pointer-events-none',
             )}

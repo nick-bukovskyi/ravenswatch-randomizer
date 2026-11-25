@@ -39,7 +39,7 @@ export function MainScreen() {
   }, [rollHeroes, rollModifiers]);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[900px]:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] min-[900px]:gap-[26px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[900px]:grid-cols-2 min-[900px]:gap-[26px]">
       <HeroPanel />
       <ModifierPanel />
     </div>
