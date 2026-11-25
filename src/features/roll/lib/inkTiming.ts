@@ -2,6 +2,12 @@
 
 import type { CardKind } from './roll.ts';
 
+/** What changed a group's cards: `initial` is the page load, `single` a re-roll of one card */
+export type InkChangeKind = 'initial' | 'roll' | 'single' | 'reset';
+
+/** The `data-ink` state of a card: cards a page loads with (no delay) show at rest */
+type InkState = 'in' | 'out' | 'rest';
+
 export const INK_STAGGER_MS: Record<CardKind, number> = { hero: 420, modifier: 300 };
 
 const LEAVE_STAGGER_MS: Record<CardKind, number> = { hero: 140, modifier: 90 };
@@ -47,15 +53,30 @@ export function leaveDelayAt(kind: CardKind, slot: number, cardCount: number): n
   return (cardCount - 1 - slot) * LEAVE_STAGGER_MS[kind];
 }
 
+export function inkState(isLeaving: boolean, delayMs: number | null): InkState {
+  if (isLeaving) {
+    return 'out';
+  }
+
+  return delayMs === null ? 'rest' : 'in';
+}
+
+/** Null when the page loaded with these cards: the score then shows without counting */
 export function scoreCountAt({
-  isSingle,
+  changeKind,
   lastDelayMs,
   prefersReducedMotion,
 }: {
-  isSingle: boolean;
+  changeKind: InkChangeKind;
   lastDelayMs: number;
   prefersReducedMotion: boolean;
-}): number {
+}): number | null {
+  if (changeKind === 'initial') {
+    return null;
+  }
+
+  const isSingle = changeKind === 'single';
+
   if (prefersReducedMotion) {
     return isSingle ? 0 : lastDelayMs;
   }

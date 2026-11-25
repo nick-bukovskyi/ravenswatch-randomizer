@@ -2,21 +2,22 @@ import gsap from 'gsap';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { usePrefersReducedMotion } from '../../../shared/hooks/usePrefersReducedMotion.ts';
-import { INK_STAGGER_MS, inkRingAt, inkStampAt } from '../lib/inkTiming.ts';
+import { INK_STAGGER_MS, inkRingAt, inkStampAt, type InkChangeKind } from '../lib/inkTiming.ts';
 import type { CardKind } from '../lib/roll.ts';
 import { emitRollEvent } from '../lib/rollEvents.ts';
 
 interface InkSlot<Id extends string> {
   readonly id: Id;
   readonly key: string;
-  /** Fixed for the card's lifetime so a finished reveal never replays */
-  readonly delayMs: number;
+  /**
+   * Fixed for the card's lifetime so a finished reveal never replays; null for the cards a page
+   * loads with, which show at rest
+   */
+  readonly delayMs: number | null;
 }
 
-type ChangeKind = 'initial' | 'roll' | 'single' | 'reset';
-
 interface InkChange<Id extends string> {
-  readonly kind: ChangeKind;
+  readonly kind: InkChangeKind;
   readonly cards: readonly { readonly id: Id; readonly delayMs: number }[];
 }
 
@@ -45,17 +46,14 @@ export function useInkReveal<Id extends string>({
 }: InkRevealInput<Id>) {
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const [tracked, setTracked] = useState<TrackedGroup<Id>>(() => {
-    const cards = ids.map((id, index) => ({ id, delayMs: index * INK_STAGGER_MS[kind] }));
-
-    return {
-      ids,
-      rollId,
-      slots: cards.map((card, index) => ({ ...card, key: `0-${index}` })),
-      change: { kind: 'initial', cards },
-      generation: 0,
-    };
-  });
+  // Only a roll or a re-roll inks cards in; a page load shows them at rest
+  const [tracked, setTracked] = useState<TrackedGroup<Id>>(() => ({
+    ids,
+    rollId,
+    slots: ids.map((id, index) => ({ id, key: `0-${index}`, delayMs: null })),
+    change: { kind: 'initial', cards: [] },
+    generation: 0,
+  }));
 
   const pendingRef = useRef<gsap.core.Tween[]>([]);
 
@@ -76,9 +74,6 @@ export function useInkReveal<Id extends string>({
     // Only a roll or a reset replaces cards still landing
     if (scheduled.kind === 'roll' || scheduled.kind === 'reset') {
       killAll(pending);
-    }
-    if (scheduled.kind === 'initial') {
-      return;
     }
 
     scheduled.cards.forEach((card, index) => {
@@ -106,7 +101,7 @@ export function useInkReveal<Id extends string>({
     return () => killAll(pending);
   }, []);
 
-  return { slots: tracked.slots, isSingle: change.kind === 'single', lastDelayMs };
+  return { slots: tracked.slots, changeKind: change.kind, lastDelayMs };
 }
 
 function nextGroup<Id extends string>({
@@ -150,7 +145,7 @@ function nextGroup<Id extends string>({
   };
 }
 
-function changeKind(isRoll: boolean, cardCount: number): ChangeKind {
+function changeKind(isRoll: boolean, cardCount: number): InkChangeKind {
   if (isRoll) {
     return 'roll';
   }

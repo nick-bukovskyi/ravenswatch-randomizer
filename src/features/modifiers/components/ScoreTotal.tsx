@@ -13,7 +13,7 @@ const TICK_PROGRESS = [0.25, 0.5, 0.75, 1] as const;
 
 interface ScoreTotalProps {
   percent: number;
-  countAtMs: number;
+  countAtMs: number | null;
 }
 
 export function ScoreTotal({ percent, countAtMs }: ScoreTotalProps) {
@@ -36,6 +36,13 @@ export function ScoreTotal({ percent, countAtMs }: ScoreTotalProps) {
         element.textContent = formatScorePercent(Math.round(counter.percent));
         element.dataset.percent = String(counter.percent);
       };
+
+      if (countAtMs === null) {
+        counter.percent = percent;
+        writeCount();
+
+        return;
+      }
 
       const countSeconds = prefersReducedMotion ? 0 : COUNT_SECONDS;
       const ticks = prefersReducedMotion ? [1] : TICK_PROGRESS;

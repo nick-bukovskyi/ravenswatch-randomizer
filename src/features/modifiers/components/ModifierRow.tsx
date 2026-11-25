@@ -3,6 +3,7 @@ import { Icon } from '../../../shared/ui/Icon.tsx';
 import { CardActions } from '../../roll/components/CardActions.tsx';
 import { useRefusalShake } from '../../roll/hooks/useRefusalShake.ts';
 import { useTouchSelection } from '../../roll/hooks/useTouchSelection.ts';
+import { inkState } from '../../roll/lib/inkTiming.ts';
 import type { Modifier } from '../data/modifiers.ts';
 import { IconTile } from './IconTile.tsx';
 
@@ -11,7 +12,7 @@ interface ModifierRowProps {
   slot: number;
   isLocked: boolean;
   isLeaving: boolean;
-  delayMs: number;
+  delayMs: number | null;
   leaveDelayMs: number;
 }
 
@@ -29,11 +30,11 @@ export function ModifierRow({
   return (
     <li
       ref={ref}
-      data-ink={isLeaving ? 'out' : 'in'}
+      data-ink={inkState(isLeaving, delayMs)}
       data-selected={isSelected}
       data-shaking={isShaking}
       className="modifier-row"
-      style={{ '--ink-delay': `${delayMs}ms`, '--ink-leave-delay': `${leaveDelayMs}ms` }}
+      style={{ '--ink-delay': `${delayMs ?? 0}ms`, '--ink-leave-delay': `${leaveDelayMs}ms` }}
       onClick={onClick}
     >
       <div className="modifier-row__main">

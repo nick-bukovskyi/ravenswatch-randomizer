@@ -26,7 +26,7 @@ export function ModifierPanel() {
     rollId,
     cardCount: modifierIds.length,
   });
-  const { slots, isSingle, lastDelayMs } = useInkReveal({
+  const { slots, changeKind, lastDelayMs } = useInkReveal({
     kind: 'modifier',
     ids: modifierIds,
     rollId,
@@ -65,7 +65,7 @@ export function ModifierPanel() {
           </ul>
           <ScoreTotal
             percent={scorePercent}
-            countAtMs={scoreCountAt({ isSingle, lastDelayMs, prefersReducedMotion })}
+            countAtMs={scoreCountAt({ changeKind, lastDelayMs, prefersReducedMotion })}
           />
           {shortfall > 0 && (
             <p className="mt-4 pl-2.5 font-body text-base text-cream-muted">

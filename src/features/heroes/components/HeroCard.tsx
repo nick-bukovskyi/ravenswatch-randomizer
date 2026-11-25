@@ -4,6 +4,7 @@ import { PortraitFrame } from '../../../shared/ui/PortraitFrame.tsx';
 import { CardActions } from '../../roll/components/CardActions.tsx';
 import { useRefusalShake } from '../../roll/hooks/useRefusalShake.ts';
 import { useTouchSelection } from '../../roll/hooks/useTouchSelection.ts';
+import { inkState } from '../../roll/lib/inkTiming.ts';
 import type { Hero } from '../data/heroes.ts';
 
 interface HeroCardProps {
@@ -11,7 +12,7 @@ interface HeroCardProps {
   slot: number;
   isLocked: boolean;
   isLeaving: boolean;
-  delayMs: number;
+  delayMs: number | null;
   leaveDelayMs: number;
 }
 
@@ -29,11 +30,11 @@ export function HeroCard({
   return (
     <li
       ref={ref}
-      data-ink={isLeaving ? 'out' : 'in'}
+      data-ink={inkState(isLeaving, delayMs)}
       data-selected={isSelected}
       data-shaking={isShaking}
       className="hero-card"
-      style={{ '--ink-delay': `${delayMs}ms`, '--ink-leave-delay': `${leaveDelayMs}ms` }}
+      style={{ '--ink-delay': `${delayMs ?? 0}ms`, '--ink-leave-delay': `${leaveDelayMs}ms` }}
       onClick={onClick}
     >
       <div className="hero-card__body">
