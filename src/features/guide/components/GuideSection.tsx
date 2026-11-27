@@ -13,8 +13,8 @@ export function GuideSection() {
           </h2>
           <p className="mb-4">
             Can&apos;t decide who to play? Let the ravens choose. The Ravenswatch Randomizer picks a
-            random character for every player, solo or in co-op, plus random Custom Mode modifiers
-            that bend the rules of the Nightmare. No more arguing over who gets Scarlet.
+            random hero for every player, solo or in co-op, plus random Custom Mode modifiers that
+            bend the rules of the Nightmare. No more arguing over who gets Scarlet.
           </p>
           <p>
             Every roll shows how its modifiers change your end-of-run score. Like part of a roll?
