@@ -7,14 +7,13 @@ import { formatScorePercent } from '../../../shared/lib/displayText.ts';
 import { InfoPopover } from '../../../shared/ui/InfoPopover.tsx';
 import { emitRollEvent } from '../../roll/lib/rollEvents.ts';
 
-const COUNT_SECONDS = 0.6;
-/** Count progress at each tick; the last one lands with the number */
-const TICK_PROGRESS = [0.25, 0.5, 0.75, 1] as const;
-
 interface ScoreTotalProps {
   percent: number;
   countAtMs: number | null;
 }
+
+const COUNT_SECONDS = 0.6;
+const TICK_PROGRESS = [0.25, 0.5, 0.75, 1] as const;
 
 export function ScoreTotal({ percent, countAtMs }: ScoreTotalProps) {
   const prefersReducedMotion = usePrefersReducedMotion();

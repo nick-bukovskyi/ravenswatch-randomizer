@@ -8,6 +8,14 @@ import { playVolumePreview } from '../lib/soundEffects.ts';
 
 const STEP_PERCENT = 5;
 
+function volumeIcon(percent: number) {
+  if (percent === 0) {
+    return 'soundOff';
+  }
+
+  return percent < 50 ? 'soundLow' : 'sound';
+}
+
 /** A popover, not a tooltip, so it also opens on touch screens */
 export function VolumeControl() {
   const volume = useRandomizerStore((state) => state.volume);
@@ -69,12 +77,4 @@ export function VolumeControl() {
       </Popover.Portal>
     </Popover.Root>
   );
-}
-
-function volumeIcon(percent: number) {
-  if (percent === 0) {
-    return 'soundOff';
-  }
-
-  return percent < 50 ? 'soundLow' : 'sound';
 }

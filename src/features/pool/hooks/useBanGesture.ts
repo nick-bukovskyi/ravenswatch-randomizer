@@ -1,8 +1,5 @@
 import { useEffect, useRef, type MouseEvent, type PointerEvent } from 'react';
 
-const LONG_PRESS_MS = 450;
-const MOVE_TOLERANCE = 10;
-
 interface Press {
   x: number;
   y: number;
@@ -17,6 +14,9 @@ interface BanGestureHandlers {
   onPointerUp: () => void;
   onPointerCancel: () => void;
 }
+
+const LONG_PRESS_MS = 450;
+const MOVE_TOLERANCE = 10;
 
 /**
  * Android reports a long-press as both a timer hit and a context menu, and some browsers click

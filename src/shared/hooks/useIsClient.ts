@@ -1,10 +1,5 @@
 import { useSyncExternalStore } from 'react';
 
-/** False during prerender and hydration, so client-only output cannot mismatch */
-export function useIsClient(): boolean {
-  return useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
-}
-
 function subscribe(): () => void {
   return () => {};
 }
@@ -15,4 +10,8 @@ function getClientSnapshot(): boolean {
 
 function getServerSnapshot(): boolean {
   return false;
+}
+
+export function useIsClient(): boolean {
+  return useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
 }

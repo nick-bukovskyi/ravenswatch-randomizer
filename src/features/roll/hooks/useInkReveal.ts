@@ -37,6 +37,69 @@ interface InkRevealInput<Id extends string> {
   readonly isLeaving: boolean;
 }
 
+function nextGroup<Id extends string>({
+  tracked,
+  kind,
+  ids,
+  rollId,
+  lockedIds,
+}: {
+  tracked: TrackedGroup<Id>;
+  kind: CardKind;
+  ids: readonly Id[];
+  rollId: number;
+  lockedIds: readonly Id[];
+}): TrackedGroup<Id> {
+  const generation = tracked.generation + 1;
+  const isRoll = tracked.rollId !== rollId;
+  const cards: { id: Id; delayMs: number }[] = [];
+
+  const slots = ids.map((id, index): InkSlot<Id> => {
+    const previousSlot = tracked.slots[index];
+    const isSameCard = tracked.ids[index] === id;
+
+    if (previousSlot && isSameCard && (!isRoll || lockedIds.includes(id))) {
+      return previousSlot;
+    }
+
+    const delayMs = isRoll ? cards.length * INK_STAGGER_MS[kind] : 0;
+
+    cards.push({ id, delayMs });
+
+    return { id, key: `${generation}-${index}`, delayMs };
+  });
+
+  return {
+    ids,
+    rollId,
+    slots,
+    change: { kind: changeKind(isRoll, ids.length), cards },
+    generation,
+  };
+}
+
+function changeKind(isRoll: boolean, cardCount: number): InkChangeKind {
+  if (isRoll) {
+    return 'roll';
+  }
+
+  return cardCount === 0 ? 'reset' : 'single';
+}
+
+function lastDelay<Id extends string>(change: InkChange<Id>): number {
+  return Math.max(0, ...change.cards.map((card) => card.delayMs));
+}
+
+function sameIds<Id extends string>(left: readonly Id[], right: readonly Id[]): boolean {
+  return left.length === right.length && left.every((id, index) => id === right[index]);
+}
+
+function killAll(pending: gsap.core.Tween[]): void {
+  for (const tween of pending.splice(0)) {
+    tween.kill();
+  }
+}
+
 export function useInkReveal<Id extends string>({
   kind,
   ids,
@@ -102,67 +165,4 @@ export function useInkReveal<Id extends string>({
   }, []);
 
   return { slots: tracked.slots, changeKind: change.kind, lastDelayMs };
-}
-
-function nextGroup<Id extends string>({
-  tracked,
-  kind,
-  ids,
-  rollId,
-  lockedIds,
-}: {
-  tracked: TrackedGroup<Id>;
-  kind: CardKind;
-  ids: readonly Id[];
-  rollId: number;
-  lockedIds: readonly Id[];
-}): TrackedGroup<Id> {
-  const generation = tracked.generation + 1;
-  const isRoll = tracked.rollId !== rollId;
-  const cards: { id: Id; delayMs: number }[] = [];
-
-  const slots = ids.map((id, index): InkSlot<Id> => {
-    const previousSlot = tracked.slots[index];
-    const isSameCard = tracked.ids[index] === id;
-
-    if (previousSlot && isSameCard && (!isRoll || lockedIds.includes(id))) {
-      return previousSlot;
-    }
-
-    const delayMs = isRoll ? cards.length * INK_STAGGER_MS[kind] : 0;
-
-    cards.push({ id, delayMs });
-
-    return { id, key: `${generation}-${index}`, delayMs };
-  });
-
-  return {
-    ids,
-    rollId,
-    slots,
-    change: { kind: changeKind(isRoll, ids.length), cards },
-    generation,
-  };
-}
-
-function changeKind(isRoll: boolean, cardCount: number): InkChangeKind {
-  if (isRoll) {
-    return 'roll';
-  }
-
-  return cardCount === 0 ? 'reset' : 'single';
-}
-
-function lastDelay<Id extends string>(change: InkChange<Id>): number {
-  return Math.max(0, ...change.cards.map((card) => card.delayMs));
-}
-
-function sameIds<Id extends string>(left: readonly Id[], right: readonly Id[]): boolean {
-  return left.length === right.length && left.every((id, index) => id === right[index]);
-}
-
-function killAll(pending: gsap.core.Tween[]): void {
-  for (const tween of pending.splice(0)) {
-    tween.kill();
-  }
 }

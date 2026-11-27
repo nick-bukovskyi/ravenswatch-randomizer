@@ -3,15 +3,37 @@ import { useId } from 'react';
 
 import { cn } from '../../../shared/lib/cn.ts';
 
-const SCALLOPS = 14;
-
-const WAX_PATH = buildScallopedCircle({ center: 50, inner: 41, outer: 51, count: SCALLOPS });
-
 interface BanSealProps {
   className?: string;
 }
 
-/** Wrap in `AnimatePresence` for the exit; the parent button carries `aria-pressed` */
+const SCALLOPS = 14;
+const WAX_PATH = buildScallopedCircle({ center: 50, inner: 41, outer: 51, count: SCALLOPS });
+
+function buildScallopedCircle({
+  center,
+  inner,
+  outer,
+  count,
+}: {
+  center: number;
+  inner: number;
+  outer: number;
+  count: number;
+}): string {
+  const step = (Math.PI * 2) / count;
+
+  const point = (radius: number, angle: number) =>
+    `${(center + radius * Math.cos(angle)).toFixed(2)} ${(center + radius * Math.sin(angle)).toFixed(2)}`;
+
+  const curves = Array.from(
+    { length: count },
+    (_, index) => `Q${point(outer, (index + 0.5) * step)} ${point(inner, (index + 1) * step)}`,
+  );
+
+  return `M${point(inner, 0)} ${curves.join(' ')}Z`;
+}
+
 export function BanSeal({ className }: BanSealProps) {
   const id = useId();
 
@@ -96,28 +118,4 @@ export function BanSeal({ className }: BanSealProps) {
       </svg>
     </motion.span>
   );
-}
-
-function buildScallopedCircle({
-  center,
-  inner,
-  outer,
-  count,
-}: {
-  center: number;
-  inner: number;
-  outer: number;
-  count: number;
-}): string {
-  const step = (Math.PI * 2) / count;
-
-  const point = (radius: number, angle: number) =>
-    `${(center + radius * Math.cos(angle)).toFixed(2)} ${(center + radius * Math.sin(angle)).toFixed(2)}`;
-
-  const curves = Array.from(
-    { length: count },
-    (_, index) => `Q${point(outer, (index + 0.5) * step)} ${point(inner, (index + 1) * step)}`,
-  );
-
-  return `M${point(inner, 0)} ${curves.join(' ')}Z`;
 }

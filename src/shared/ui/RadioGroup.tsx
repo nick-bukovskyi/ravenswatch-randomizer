@@ -7,6 +7,23 @@ interface RadioGroupProps {
   className?: string;
 }
 
+function nextIndex(key: string, currentIndex: number, count: number): number | null {
+  switch (key) {
+    case 'ArrowRight':
+    case 'ArrowDown':
+      return (currentIndex + 1) % count;
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      return (currentIndex - 1 + count) % count;
+    case 'Home':
+      return 0;
+    case 'End':
+      return count - 1;
+    default:
+      return null;
+  }
+}
+
 export function RadioGroup({ label, children, className }: RadioGroupProps) {
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const radios = Array.from(
@@ -31,21 +48,4 @@ export function RadioGroup({ label, children, className }: RadioGroupProps) {
       {children}
     </div>
   );
-}
-
-function nextIndex(key: string, currentIndex: number, count: number): number | null {
-  switch (key) {
-    case 'ArrowRight':
-    case 'ArrowDown':
-      return (currentIndex + 1) % count;
-    case 'ArrowLeft':
-    case 'ArrowUp':
-      return (currentIndex - 1 + count) % count;
-    case 'Home':
-      return 0;
-    case 'End':
-      return count - 1;
-    default:
-      return null;
-  }
 }
