@@ -16,7 +16,6 @@ export function ModifierEmptyState({ modifierCount, shouldAnimateIn }: ModifierE
       rollLabel="Roll modifiers"
       drawText={modifierCount === 1 ? 'a modifier' : `${modifierCount} modifiers`}
       shouldAnimateIn={shouldAnimateIn}
-      className="min-h-[390px]"
     >
       <div className="modifier-empty-state__hand">
         <span data-place="left" className="modifier-empty-state__tile">

@@ -35,7 +35,6 @@ import {
 
 export interface RandomizerState extends SavedState, RollContext {
   readonly shortfall: RollShortfall;
-  // Bumped on every roll and restore of their group; they key the reveal animations
   readonly heroRollId: number;
   readonly modifierRollId: number;
 
@@ -44,12 +43,12 @@ export interface RandomizerState extends SavedState, RollContext {
   resetHeroes: () => void;
   resetModifiers: () => void;
   rerollCard: (kind: CardKind, index: number) => void;
+  banCard: (kind: CardKind, index: number) => void;
   toggleLock: (kind: CardKind, index: number) => void;
   setSettings: (changes: Partial<RollSettings>) => void;
-  /** Returns false when the hero is the last unbanned one */
   toggleHeroBan: (id: HeroId) => boolean;
   toggleModifierBan: (id: ModifierId) => void;
-  resetBans: () => void;
+  resetBans: (kind: CardKind) => void;
   setVolume: (volume: number) => void;
   restoreFromQuery: (query: string) => void;
   clearHistory: () => void;
@@ -128,14 +127,19 @@ export const useRandomizerStore = create<RandomizerState>()(
           return;
         }
 
-        // A re-roll refines the newest roll, so it replaces that entry
-        const isNewestShown = state.history[0]?.query === encodeShareQuery(state);
-        const history = isNewestShown ? state.history.slice(1) : state.history;
+        set({ result, history: withRefinedEntry(state, result) });
+      },
 
-        set({
-          result,
-          history: withEntry(history, { result, settings: state.settings }),
-        });
+      banCard: (kind, index) => {
+        const state = get();
+        const bans = withCardBanned({ result: state.result, bans: state.bans, kind, index });
+        const result = replaceCard({ ...state, bans }, kind, index);
+
+        if (result === null) {
+          return;
+        }
+
+        set({ bans, result, history: withRefinedEntry(state, result) });
       },
 
       toggleLock: (kind, index) => {
@@ -170,7 +174,11 @@ export const useRandomizerStore = create<RandomizerState>()(
         set({ bans: { ...bans, modifierIds: toggled(bans.modifierIds, id) } });
       },
 
-      resetBans: () => set({ bans: NO_IDS }),
+      resetBans: (kind) => {
+        const { bans } = get();
+
+        set({ bans: kind === 'hero' ? { ...bans, heroIds: [] } : { ...bans, modifierIds: [] } });
+      },
 
       setVolume: (volume) => set({ volume: clampVolume(volume) }),
 
@@ -211,6 +219,42 @@ function withEntry(history: readonly HistoryEntry[], roll: SharedRoll): HistoryE
   const older = history[0]?.query === query ? history.slice(1) : history;
 
   return [{ query, timestamp: Date.now() }, ...older].slice(0, HISTORY_LIMIT);
+}
+
+function withRefinedEntry(state: RandomizerState, result: HeroesAndModifiers): HistoryEntry[] {
+  const isNewestShown = state.history[0]?.query === encodeShareQuery(state);
+  const history = isNewestShown ? state.history.slice(1) : state.history;
+
+  return withEntry(history, { result, settings: state.settings });
+}
+
+function withCardBanned({
+  result,
+  bans,
+  kind,
+  index,
+}: {
+  result: HeroesAndModifiers;
+  bans: HeroesAndModifiers;
+  kind: CardKind;
+  index: number;
+}): HeroesAndModifiers {
+  switch (kind) {
+    case 'hero': {
+      const id = result.heroIds[index];
+
+      return id === undefined || bans.heroIds.includes(id)
+        ? bans
+        : { ...bans, heroIds: [...bans.heroIds, id] };
+    }
+    case 'modifier': {
+      const id = result.modifierIds[index];
+
+      return id === undefined || bans.modifierIds.includes(id)
+        ? bans
+        : { ...bans, modifierIds: [...bans.modifierIds, id] };
+    }
+  }
 }
 
 function withLockToggled({

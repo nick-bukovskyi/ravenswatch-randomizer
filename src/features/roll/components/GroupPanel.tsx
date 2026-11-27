@@ -1,5 +1,6 @@
 import { useId, useRef, type MouseEvent, type ReactNode } from 'react';
 
+import { cn } from '../../../shared/lib/cn.ts';
 import { Icon } from '../../../shared/ui/Icon.tsx';
 import { Tooltip } from '../../../shared/ui/Tooltip.tsx';
 import { useHeightTransition } from '../hooks/useHeightTransition.ts';
@@ -11,11 +12,21 @@ interface GroupPanelProps {
   kind: CardKind;
   title: string;
   chip: ReactNode;
+  bans: ReactNode;
   children: ReactNode;
+  bodyClassName?: string;
   onReset?: () => void;
 }
 
-export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelProps) {
+export function GroupPanel({
+  kind,
+  title,
+  chip,
+  bans,
+  children,
+  bodyClassName,
+  onReset,
+}: GroupPanelProps) {
   const headingId = useId();
 
   const rollButtonRef = useRef<HTMLButtonElement>(null);
@@ -34,8 +45,7 @@ export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelP
 
   return (
     <section aria-labelledby={headingId} className="group-panel @container">
-      {/* The header wraps by its own width, so the Roll button gets its own line before anything overlaps */}
-      <div className="relative mb-[26px] flex items-center gap-x-2 gap-y-3 @max-[432px]:flex-wrap">
+      <div className="relative mb-3 flex items-center gap-x-2 gap-y-3 @max-[432px]:flex-wrap">
         <div className="flex min-w-0 flex-1 items-center gap-1.5">
           <h2
             id={headingId}
@@ -56,10 +66,13 @@ export function GroupPanel({ kind, title, chip, children, onReset }: GroupPanelP
             </Tooltip>
           )}
         </div>
-        {chip}
         <RollButton ref={rollButtonRef} kind={kind} />
       </div>
-      <div ref={bodyRef} className="group-panel__body">
+      <div className="relative mb-[22px] flex flex-wrap items-center gap-x-4 gap-y-2">
+        {chip}
+        {bans}
+      </div>
+      <div ref={bodyRef} className={cn('group-panel__body', bodyClassName)}>
         <div ref={contentRef} className="group-panel__content">
           <RerollFocusContext value={rerollFocusRef}>{children}</RerollFocusContext>
         </div>

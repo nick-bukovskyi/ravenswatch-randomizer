@@ -19,7 +19,8 @@ export function GuideSection() {
           <p>
             Every roll shows how its modifiers change your end-of-run score. Like part of a roll?
             Lock those cards and roll again, or re-roll a single card. Never want to see a hero or
-            modifier? Ban it in <b className="font-medium text-gold-300">The Pool</b>. Press{' '}
+            modifier? <b className="font-medium text-gold-300">Ban</b> it from its card, or open the
+            ban list in its panel. Press{' '}
             <kbd className="font-body font-medium text-gold-300">H</kbd> or{' '}
             <kbd className="font-body font-medium text-gold-300">M</kbd> to roll without the mouse,
             and use <b className="font-medium text-gold-300">Share</b> to send the exact run to your

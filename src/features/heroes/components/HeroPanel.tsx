@@ -1,6 +1,7 @@
 import { cn } from '../../../shared/lib/cn.ts';
 import { formatList } from '../../../shared/lib/displayText.ts';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
+import { PoolDialog } from '../../pool/components/PoolDialog.tsx';
 import { GroupPanel } from '../../roll/components/GroupPanel.tsx';
 import { useGroupReset } from '../../roll/hooks/useGroupReset.ts';
 import { useInkReveal } from '../../roll/hooks/useInkReveal.ts';
@@ -35,11 +36,18 @@ export function HeroPanel() {
       kind="hero"
       title="Heroes"
       chip={<PartySizeChip />}
+      bans={<PoolDialog kind="hero" />}
+      bodyClassName={cn(
+        party.length === 0 && [
+          partySize <= 2 && 'min-h-[400px]',
+          partySize === 1 && 'max-[560px]:min-h-[440px]',
+          partySize >= 3 && 'min-h-[560px]',
+        ],
+      )}
       onReset={party.length > 0 ? startReset : undefined}
     >
       {party.length > 0 ? (
         <>
-          {/* One hero takes the two-hero size, so the panel keeps its height; phones show it larger */}
           <ul
             className={cn(
               'flex flex-wrap justify-center gap-x-4 gap-y-[18px]',

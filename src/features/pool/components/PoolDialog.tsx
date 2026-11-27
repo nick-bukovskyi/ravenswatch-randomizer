@@ -1,34 +1,46 @@
 import { useState } from 'react';
 
 import { useTemporaryState } from '../../../shared/hooks/useTemporaryState.ts';
+import { cn } from '../../../shared/lib/cn.ts';
 import { Button } from '../../../shared/ui/Button.tsx';
 import { GameDialog, type DialogNotice } from '../../../shared/ui/GameDialog.tsx';
 import { Icon } from '../../../shared/ui/Icon.tsx';
-import { ToolButton } from '../../../shared/ui/ToolButton.tsx';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
-import { heroes } from '../../heroes/data/heroes.ts';
-import { modifiers, type Modifier } from '../../modifiers/data/modifiers.ts';
-import { BanCountBadge } from './BanCountBadge.tsx';
-import { PoolGroup } from './PoolGroup.tsx';
-import { PoolHeroTile } from './PoolHeroTile.tsx';
-import { PoolModifierTile } from './PoolModifierTile.tsx';
+import type { CardKind } from '../../roll/lib/roll.ts';
+import { HeroPool } from './HeroPool.tsx';
+import { ModifierPool } from './ModifierPool.tsx';
 
-const goodModifiers = modifiers.filter((modifier) => modifier.polarity === 'good');
-const badModifiers = modifiers.filter((modifier) => modifier.polarity === 'bad');
+interface PoolDialogProps {
+  kind: CardKind;
+}
+
+interface PoolCopy {
+  title: string;
+  items: string;
+  resetNotice: string;
+}
 
 const NOTICE_MS = 3500;
 
-export function PoolDialog() {
-  const bans = useRandomizerStore((state) => state.bans);
+const COPY: Record<CardKind, PoolCopy> = {
+  hero: { title: 'Hero Pool', items: 'heroes', resetNotice: 'Every hero is back in the pool' },
+  modifier: {
+    title: 'Modifier Pool',
+    items: 'modifiers',
+    resetNotice: 'Every modifier is back in the pool',
+  },
+};
+
+export function PoolDialog({ kind }: PoolDialogProps) {
+  const banCount = useRandomizerStore((state) =>
+    kind === 'hero' ? state.bans.heroIds.length : state.bans.modifierIds.length,
+  );
   const resetBans = useRandomizerStore((state) => state.resetBans);
 
   const [isOpen, setIsOpen] = useState(false);
   const [notice, setNotice] = useTemporaryState<DialogNotice | null>(null, NOTICE_MS);
 
-  const banCount = bans.heroIds.length + bans.modifierIds.length;
-
-  const countBanned = (group: readonly Modifier[]) =>
-    group.filter((modifier) => bans.modifierIds.includes(modifier.id)).length;
+  const { title, items, resetNotice } = COPY[kind];
 
   function showNotice(message: string, tone: DialogNotice['tone']) {
     setNotice((current) => ({ id: (current?.id ?? 0) + 1, message, tone }));
@@ -44,22 +56,30 @@ export function PoolDialog() {
       return;
     }
 
-    resetBans();
-    showNotice('Every hero and modifier is back in the pool', 'info');
+    resetBans(kind);
+    showNotice(resetNotice, 'info');
   }
 
   return (
     <GameDialog
       open={isOpen}
       trigger={
-        <ToolButton label="Pool" icon="pool">
-          <BanCountBadge count={banCount} />
-        </ToolButton>
+        <button
+          type="button"
+          className={cn(
+            'inline-flex h-8 shrink-0 cursor-pointer items-center gap-1.5 pt-0.5 font-body text-base whitespace-nowrap underline decoration-1 underline-offset-4 transition-colors duration-200 hover:text-gold-100',
+            banCount > 0 ? 'text-gold-300' : 'text-cream-muted',
+          )}
+        >
+          <Icon name="ban" className={cn('-mt-0.5 size-4', banCount > 0 && 'text-crimson-300')} />
+          <span className="sr-only">{title}: </span>
+          {banCount > 0 ? `${banCount} banned` : 'No bans'}
+        </button>
       }
-      title="The Pool"
+      title={title}
       description={
         <>
-          Banned heroes and modifiers are never rolled.{' '}
+          Banned {items} are never rolled.{' '}
           <span className="pointer-coarse:hidden">Click or right-click to ban or unban.</span>
           <span className="hidden pointer-coarse:inline">Tap or long-press to ban or unban.</span>
         </>
@@ -84,48 +104,13 @@ export function PoolDialog() {
       notice={notice}
       onOpenChange={handleOpenChange}
     >
-      <PoolGroup
-        title="Heroes"
-        available={heroes.length - bans.heroIds.length}
-        total={heroes.length}
-        tone="gold"
-        listClassName="grid grid-cols-4 gap-x-1 gap-y-2 min-[480px]:grid-cols-5 md:grid-cols-7"
-      >
-        {heroes.map((hero) => (
-          <PoolHeroTile
-            key={hero.id}
-            hero={hero}
-            onLastHeroRefused={() =>
-              showNotice('At least one hero must stay in the pool', 'warning')
-            }
-          />
-        ))}
-      </PoolGroup>
-
-      <div className="mt-6 grid gap-x-8 gap-y-6 md:grid-cols-2">
-        <PoolGroup
-          title="Good modifiers"
-          available={goodModifiers.length - countBanned(goodModifiers)}
-          total={goodModifiers.length}
-          tone="positive"
-          listClassName="flex flex-col gap-2"
-        >
-          {goodModifiers.map((modifier) => (
-            <PoolModifierTile key={modifier.id} modifier={modifier} />
-          ))}
-        </PoolGroup>
-        <PoolGroup
-          title="Bad modifiers"
-          available={badModifiers.length - countBanned(badModifiers)}
-          total={badModifiers.length}
-          tone="negative"
-          listClassName="flex flex-col gap-2"
-        >
-          {badModifiers.map((modifier) => (
-            <PoolModifierTile key={modifier.id} modifier={modifier} />
-          ))}
-        </PoolGroup>
-      </div>
+      {kind === 'hero' ? (
+        <HeroPool
+          onLastHeroRefused={() => showNotice('At least one hero must stay in the pool', 'warning')}
+        />
+      ) : (
+        <ModifierPool />
+      )}
     </GameDialog>
   );
 }

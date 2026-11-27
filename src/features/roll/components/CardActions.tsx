@@ -1,11 +1,10 @@
 import { use, type MouseEvent } from 'react';
 
-import { Icon } from '../../../shared/ui/Icon.tsx';
-import { Tooltip } from '../../../shared/ui/Tooltip.tsx';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
-import { playLock, playUnlock } from '../../sound/lib/soundEffects.ts';
+import { playBan, playLock, playUnlock } from '../../sound/lib/soundEffects.ts';
 import { RerollFocusContext } from '../lib/rerollFocusContext.ts';
 import { canReplaceCard, type CardKind } from '../lib/roll.ts';
+import { CardActionButton } from './CardActionButton.tsx';
 
 interface CardActionsProps {
   kind: CardKind;
@@ -16,27 +15,52 @@ interface CardActionsProps {
   onRefuse: () => void;
 }
 
+interface ReplaceHints {
+  ready: string;
+  locked: string;
+}
+
+function replaceHint(isLocked: boolean, canReroll: boolean, hints: ReplaceHints): string {
+  if (isLocked) {
+    return hints.locked;
+  }
+
+  return canReroll ? hints.ready : 'Nothing else to re-roll into';
+}
+
 export function CardActions({ kind, slot, name, isLocked, className, onRefuse }: CardActionsProps) {
   const canReroll = useRandomizerStore((state) => canReplaceCard(state, kind, slot));
   const rerollCard = useRandomizerStore((state) => state.rerollCard);
   const toggleLock = useRandomizerStore((state) => state.toggleLock);
+  const banCard = useRandomizerStore((state) => state.banCard);
   const rerollFocusRef = use(RerollFocusContext);
 
   const isRerollAvailable = canReroll && !isLocked;
 
-  function handleReroll(event: MouseEvent<HTMLButtonElement>) {
+  function replaceWith(event: MouseEvent<HTMLButtonElement>, replace: () => void) {
     if (!isRerollAvailable) {
       onRefuse();
 
       return;
     }
 
-    // A re-roll remounts the card, so the new card's button takes the focus
+    // A re-roll remounts the card, so the new card's re-roll button takes the focus
     if (event.currentTarget === document.activeElement) {
       rerollFocusRef.current = slot;
     }
 
-    rerollCard(kind, slot);
+    replace();
+  }
+
+  function handleReroll(event: MouseEvent<HTMLButtonElement>) {
+    replaceWith(event, () => rerollCard(kind, slot));
+  }
+
+  function handleBan(event: MouseEvent<HTMLButtonElement>) {
+    replaceWith(event, () => {
+      playBan();
+      banCard(kind, slot);
+    });
   }
 
   function handleLockToggle() {
@@ -58,37 +82,34 @@ export function CardActions({ kind, slot, name, isLocked, className, onRefuse }:
 
   return (
     <div className={className}>
-      <Tooltip content={rerollHint(isLocked, canReroll)}>
-        <button
-          ref={takeOverFocus}
-          type="button"
-          aria-label={`Re-roll ${name}`}
-          aria-disabled={!isRerollAvailable || undefined}
-          className="card-actions__button"
-          onClick={handleReroll}
-        >
-          <Icon name="reroll" />
-        </button>
-      </Tooltip>
-      <Tooltip content={isLocked ? 'Unlock' : 'Lock'}>
-        <button
-          type="button"
-          aria-label={`Lock ${name}`}
-          aria-pressed={isLocked}
-          className="card-actions__button"
-          onClick={handleLockToggle}
-        >
-          <Icon name={isLocked ? 'lock' : 'unlock'} />
-        </button>
-      </Tooltip>
+      <CardActionButton
+        ref={takeOverFocus}
+        label={`Re-roll ${name}`}
+        icon="reroll"
+        tooltip={replaceHint(isLocked, canReroll, {
+          ready: 'Re-roll',
+          locked: 'Unlock to re-roll',
+        })}
+        aria-disabled={!isRerollAvailable || undefined}
+        onClick={handleReroll}
+      />
+      <CardActionButton
+        label={`Lock ${name}`}
+        icon={isLocked ? 'lock' : 'unlock'}
+        tooltip={isLocked ? 'Unlock' : 'Lock'}
+        aria-pressed={isLocked}
+        onClick={handleLockToggle}
+      />
+      <CardActionButton
+        label={`Ban ${name}`}
+        icon="ban"
+        tooltip={replaceHint(isLocked, canReroll, {
+          ready: 'Ban and re-roll',
+          locked: 'Unlock to ban',
+        })}
+        aria-disabled={!isRerollAvailable || undefined}
+        onClick={handleBan}
+      />
     </div>
   );
-}
-
-function rerollHint(isLocked: boolean, canReroll: boolean): string {
-  if (isLocked) {
-    return 'Unlock to re-roll';
-  }
-
-  return canReroll ? 'Re-roll' : 'Nothing else to re-roll into';
 }

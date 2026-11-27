@@ -1,14 +1,11 @@
 import type { ReactNode } from 'react';
 
-import { cn } from '../../../shared/lib/cn.ts';
-
 interface EmptyStateProps {
   title: string;
   rollLabel: string;
   drawText: string;
   shouldAnimateIn: boolean;
   children: ReactNode;
-  className?: string;
 }
 
 export function EmptyState({
@@ -17,15 +14,11 @@ export function EmptyState({
   drawText,
   shouldAnimateIn,
   children,
-  className,
 }: EmptyStateProps) {
   return (
     <div
       data-animate-in={shouldAnimateIn}
-      className={cn(
-        'empty-state flex flex-col items-center gap-3.5 px-4 py-3 text-center',
-        className,
-      )}
+      className="empty-state flex flex-col items-center gap-3.5 px-4 py-3 text-center"
     >
       <div aria-hidden="true" className="flex min-h-[150px] w-full items-center justify-center">
         {children}

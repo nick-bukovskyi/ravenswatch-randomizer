@@ -2,6 +2,7 @@ import { usePrefersReducedMotion } from '../../../shared/hooks/usePrefersReduced
 import { cn } from '../../../shared/lib/cn.ts';
 import { formatList, formatScorePercent } from '../../../shared/lib/displayText.ts';
 import { useRandomizerStore } from '../../../store/useRandomizerStore.ts';
+import { PoolDialog } from '../../pool/components/PoolDialog.tsx';
 import { GroupPanel } from '../../roll/components/GroupPanel.tsx';
 import { useGroupReset } from '../../roll/hooks/useGroupReset.ts';
 import { useInkReveal } from '../../roll/hooks/useInkReveal.ts';
@@ -46,6 +47,8 @@ export function ModifierPanel() {
       kind="modifier"
       title="Modifiers"
       chip={<ModifierSettingsChip />}
+      bans={<PoolDialog kind="modifier" />}
+      bodyClassName={cn(rows.length === 0 && 'min-h-[390px]')}
       onReset={rows.length > 0 ? startReset : undefined}
     >
       {rows.length > 0 ? (

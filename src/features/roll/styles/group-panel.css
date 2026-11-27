@@ -27,15 +27,18 @@
   }
 
   /*
-   * useHeightTransition sets the height; the body still grows to the row height, so the shorter
-   * panel of the pair keeps its empty state centered. Content overflows while the body grows
+   * useHeightTransition sets the height; the body still grows to the row height and to a reserved
+   * min-height, so an empty state stays centered and glides as either changes. Content overflows
+   * while the body grows
    */
   .group-panel__body {
     display: flex;
     flex: 1 0 auto;
     flex-direction: column;
     min-height: 0;
-    transition: height 0.45s var(--ease-game);
+    transition:
+      height 0.45s var(--ease-game),
+      min-height 0.45s var(--ease-game);
   }
 
   .group-panel__content {
