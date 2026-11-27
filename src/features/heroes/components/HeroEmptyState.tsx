@@ -27,17 +27,17 @@ export function HeroEmptyState({ partySize, shouldAnimateIn }: HeroEmptyStatePro
       <div className="hero-empty-state__fan">
         <span data-place="left" className="hero-empty-state__card">
           <PortraitFrame className="rounded-[6px]">
-            <img src={scarletPortraitBw} alt="" />
+            <img src={scarletPortraitBw} alt="Scarlet" />
           </PortraitFrame>
         </span>
         <span data-place="right" className="hero-empty-state__card">
           <PortraitFrame className="rounded-[6px]">
-            <img src={theSnowQueenPortraitBw} alt="" />
+            <img src={theSnowQueenPortraitBw} alt="The Snow Queen" />
           </PortraitFrame>
         </span>
         <span data-place="center" className="hero-empty-state__card">
           <PortraitFrame className="rounded-[6px]">
-            <img src={beowulfPortraitBw} alt="" />
+            <img src={beowulfPortraitBw} alt="Beowulf" />
           </PortraitFrame>
         </span>
       </div>
