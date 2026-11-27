@@ -81,8 +81,8 @@ export function GameDialog({
                   </div>
                 </header>
 
-                <div className="game-dialog__body min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-3 sm:px-8 sm:py-4">
-                  {children}
+                <div className="game-dialog__body min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                  <div className="overflow-clip px-3 py-3 sm:px-8 sm:py-4">{children}</div>
                 </div>
 
                 <footer className="relative shrink-0 border-t border-white/6 px-4 py-3 sm:px-8 sm:py-4">
