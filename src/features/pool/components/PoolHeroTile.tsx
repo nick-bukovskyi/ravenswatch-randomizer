@@ -10,6 +10,7 @@ import type { Hero } from '../../heroes/data/heroes.ts';
 import { useBanGesture } from '../hooks/useBanGesture.ts';
 import { BanSeal } from './BanSeal.tsx';
 import { PoolTileHint } from './PoolTileHint.tsx';
+import { PoolTileName } from './PoolTileName.tsx';
 
 interface PoolHeroTileProps {
   hero: Hero;
@@ -74,9 +75,10 @@ export function PoolHeroTile({ hero, onLastHeroRefused }: PoolHeroTileProps) {
           </AnimatePresence>
           <PoolTileHint isBanned={isBanned} className="top-1.5 left-1/2 -translate-x-1/2" />
         </span>
-        <span className="mt-1.5 block text-sm leading-tight text-cream-bright decoration-crimson-300/80 decoration-2 transition-colors duration-300 text-engraved group-aria-pressed/tile:text-cream-muted group-aria-pressed/tile:line-through sm:text-base">
-          {toDisplayName(hero.name)}
-        </span>
+        <PoolTileName
+          name={toDisplayName(hero.name)}
+          className="mt-1.5 block text-sm leading-tight text-cream-bright transition-colors duration-300 text-engraved group-aria-pressed/tile:text-cream-muted sm:text-base"
+        />
       </button>
     </motion.li>
   );

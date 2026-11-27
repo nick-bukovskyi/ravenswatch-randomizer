@@ -10,6 +10,7 @@ import type { Modifier } from '../../modifiers/data/modifiers.ts';
 import { useBanGesture } from '../hooks/useBanGesture.ts';
 import { BanSeal } from './BanSeal.tsx';
 import { PoolTileHint } from './PoolTileHint.tsx';
+import { PoolTileName } from './PoolTileName.tsx';
 
 interface PoolModifierTileProps {
   modifier: Modifier;
@@ -56,13 +57,10 @@ export function PoolModifierTile({ modifier }: PoolModifierTileProps) {
 
         <span className="min-w-0 flex-1">
           <span className="flex items-baseline justify-between gap-2">
-            <span className="relative text-lg leading-tight text-cream-bright transition-colors duration-300 text-engraved group-aria-pressed/tile:text-cream-muted">
-              {modifier.name}
-              {/* A clear copy on top carries the strike in front of the text and wraps the same way */}
-              <span aria-hidden="true" className="pool-tile__strike-layer">
-                <span className="pool-tile__strike">{modifier.name}</span>
-              </span>
-            </span>
+            <PoolTileName
+              name={modifier.name}
+              className="text-lg leading-tight text-cream-bright transition-colors duration-300 text-engraved group-aria-pressed/tile:text-cream-muted"
+            />
             <span
               data-polarity={modifier.polarity}
               className="modifier-score shrink-0 text-sm tracking-wide whitespace-nowrap transition-opacity duration-300 group-aria-pressed/tile:opacity-50"
